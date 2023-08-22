@@ -24,6 +24,7 @@ function _draw()
 	cls(12)
 	d_gantt()
 	d_milestone_anims()
+	camera_follow()
 	d_fx()
 	d_player()
 	spr(42, 110, 2, 2,2) --tg logo
@@ -40,6 +41,17 @@ function _draw()
 
 
 end
+
+function camera_follow()
+	cam_x=player.x-60
+ 	cam_y=player.y-60
+
+	cam_x=mid(0, cam_x, 896)
+	cam_y=mid(0, cam_y, 128)
+
+	camera(cam_x, cam_y)
+end
+
 -->8
 --john
 function i_player()
@@ -124,7 +136,7 @@ function u_player()
 
 	--limit fall speed
 	if (player.dy>0) then
-			player.dy=mid(-player.max_dy,player.dy,player.max_dy)
+		player.dy=mid(-player.max_dy,player.dy,player.max_dy)
 	end
 
 	--apply dx and dy to player position
@@ -134,8 +146,14 @@ function u_player()
 
 	--if run off screen warp to other side
 	--temp feature
-	if (player.x > 128) then player.x=-8 end
+	if (player.x > 896) then player.x=-8 end
 	if (player.x < -8) then player.x=128 end
+
+	-- player falls, reset
+	if (player.y > 120) then
+		player.x=-8
+		player.y=0
+	end
 
 
  --animate player run
@@ -184,22 +202,30 @@ end
 -->8
 --gantt bars
 
-
+platforms={
+	yellow={
+		x0=0,
+		y0=100,
+		x1=128,
+		y1=110,
+	}
+}
+-- where moving bars can render
+bar_areas={50, 60, 70, 80}
 
 function move_bar(bar)
 	bar.x0-=bar.speed
 	bar.x1-=bar.speed
 end
 
-
 function gen_bar()
 	local plats={}
 	local min_width=20
 	local max_width=120
 	local bar_height=8
-	local bar_y0=rnd(50)+50
+	local bar_y0=rnd(bar_areas)
 	local bar_y1=bar_y0+bar_height
-	local x0=128
+	local x0=player.x+rnd_between(30, 50)
 	local x1=x0+rnd_between(min_width,max_width)
   local colors={1,2,3,4,5,6}
 
@@ -224,6 +250,7 @@ function i_gantt()
 		day_lines={}
 	}
 
+	-- stationary starting block, temp
 	add(g.bars, {
 		x0=0,
 		y0=100,
@@ -236,11 +263,11 @@ function i_gantt()
 end
 
 function u_gantt()
- --move bars
+ 	--move bars
 	for idx,bar in ipairs(g.bars) do
 		move_bar(bar)
 		-- Cleanup
-		if bar.x1 < 0 then
+		if bar.speed != 0 and bar.x1 < player.x - 80 then
 			del(g.bars, bar)
 		end
 	end
