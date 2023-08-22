@@ -22,10 +22,10 @@ end
 
 function _draw()
 	cls(12)
+	d_fx()
 	d_gantt()
 	d_milestone_anims()
 	camera_follow()
-	d_fx()
 	d_player()
 
 	local screen_top=cam.y+128/2
@@ -36,7 +36,7 @@ function _draw()
 
 	--debug stuff
 	if (debug) then
-		print("on ground: "..tostr(player.on_platform)..' status:'..player.move, cam.x, cam.y, 9)
+		print("can jump: "..tostr(player.can_jump)..', status:'..player.move, cam.x, cam.y, 9)
 		print("dy:"..tostr(player.dy)..' dx:'..tostr(player.dx),cam.x, cam.y+10,7)
 		print("player.x:"..flr(player.x), cam.x, cam.y+20, 7)
 		print("player.y:"..flr(player.y), cam.x, cam.y+30, 7)
@@ -80,6 +80,7 @@ function i_player()
 		feet_x=0,
 		feet_y=0,
 		on_platform=false,
+		can_jump=false,
 		move='idle', -- idle, run, sprint
 
 		-- sfx
@@ -122,7 +123,7 @@ function u_player()
 		if (player.on_platform) then player.move='run' end
 	end -- right
 
-	if (btn(🅾️) ) then --speed boost
+	if (btn(🅾️) and (player.move=='run' or player.on_platform==false)) then --speed boost
 		player.dx*=2
 		player.move='sprint'
 		friction=.5
@@ -130,10 +131,17 @@ function u_player()
 		friction=.75 --reset friction
 	end
 
-	if (btn(❎) and player.on_platform == true) then --jump
+	--jumping
+	if btnp(❎) and player.on_platform == true then --jump
 		player.dy-=player.boost
+		player.can_jump=false
 		sfx(player.sfx_jump)
-	end -- X
+	elseif btnp(❎) and player.can_jump == true then --early jump
+		player.dy=-player.boost
+		player.can_jump=false
+		sfx(player.sfx_jump)
+	end
+
 
 	--limit left/right speed
 	player.dx=mid(-player.max_dx,player.dx,player.max_dx)
@@ -171,7 +179,7 @@ function u_player()
 		run_anim.f=run_anim.f+run_anim.timing
 
 		if player.move == 'sprint' then
-			dust(player.feet_x,player.feet_y,1,{6,7},4)
+			dust(player.feet_x,player.feet_y,2,1,{6,7},4)
 		end
 	else
 		run_anim.f=1
@@ -181,10 +189,9 @@ function u_player()
 	if (plat_collide(player)) then
 		player.on_platform=true
 		player.dy=0
-
 	else
 		player.on_platform=false
-		player.dy+=gravity
+		player.dy+=gravity --apply gravity
 	end
 
 	--update feet pos
@@ -302,14 +309,22 @@ function plat_collide(p)
 
 	for k,bar in ipairs(g.bars) do
 		if player.x+8 >= bar.x0 and player.x <= bar.x1 then
+			--early jump allowance 4px
+			if player.feet_y+6 >= bar.y0 and player.feet_y <= bar.y1 then
+				player.can_jump=true
+			end
+
+			--check if player is within platform y range
 			if player.feet_y >= bar.y0 and player.feet_y <= bar.y1 then
-				p.y=bar.y0-16
+				p.y=bar.y0-16 --ensure player is on top of platform
+
 				if (player.on_platform == false) then
 					sfx(player.sfx_land)
-					dust(player.feet_x,player.feet_y,2,{5,6,7},2)
+					dust(player.feet_x,player.feet_y+2,2,4,{5,6,7},3)
 				end
 
 				p.on_platform=true
+
 				-- keep player on platform
 				if (bar.speed > 0) then
 					p.x-=bar.speed
@@ -431,15 +446,15 @@ function d_fx()
 end
 
 -- poof effect
-function dust(x,y,r,c_table,num)
+function dust(x,y,r,l,c_table,num)
 	for i=0, num do
 			--settings
 			add_fx(
 					x,         -- x
 					y,         -- y
-					2+rnd(2), -- die
+					l+rnd(3), -- die
 					rnd(2)-1,  -- dx
-					rnd(2)-2,  -- dy
+					rnd(2)-3,  -- dy
 					true,      -- gravity
 					false,     -- grow
 					true,      -- shrink
