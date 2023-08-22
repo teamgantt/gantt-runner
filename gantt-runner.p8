@@ -5,32 +5,38 @@ __lua__
 --by tg devs
 
 function _init()
+	debug=true
+
 	i_player()
 	i_gantt()
 	i_milestone_anims()
+	i_particles()
 end
 
 function _update()
 	u_player()
 	u_gantt()
 	u_milestone_anims()
+	u_fx()
 end
 
 function _draw()
-	cls(0)
+	cls(12)
 	d_gantt()
 	d_milestone_anims()
+	d_fx()
 	d_player()
-	spr(42, 110, 10, 2,2)
-	print("Gantt Runner", 0, 0, 7)
+	spr(42, 110, 2, 2,2) --tg logo
 
 
 	--debug stuff
-
-	print("dy:"..tostr(player.dy))
-	print("player.x:"..flr(player.x))
-	print("player.y:"..flr(player.y))
-	print("bars: "..count(g.bars))
+	if (debug) then
+		print("on ground: "..tostr(player.on_platform)..' status:'..player.move, 0, 0, 9)
+		print("dy:"..tostr(player.dy)..' dx:'..tostr(player.dx),0,10,7)
+		print("player.x:"..flr(player.x), 0, 20, 7)
+		print("player.y:"..flr(player.y), 0, 30, 7)
+		-- print("bars: "..count(g.bars))
+	end
 
 
 end
@@ -40,26 +46,37 @@ function i_player()
 	gravity=0.5
 	friction=.75
 	player={
-	 flip_x=false,
-	 acc=0.5,
-	 boost=6,
-	 x=59,
-	 y=59,
-	 dx=0,
-	 dy=0,
-	 max_dx=2,
-	 max_dy=3,
-	 on_ground=false,
-	 milestones=0,
-	 sfx_jump=0,
-	 sfx_land=1,
-	 -- sprites
-	 idle_s=32,
-	 falling_s=38,
-	 jumping_s=40,
+		-- player stats
+		milestones=0,
+
+		-- player physics
+		boost=6,
+		acc=0.5,
+		dx=0,
+		dy=0,
+		max_dx=4,
+		max_dy=4,
+
+		-- player state
+		flip_x=false,
+		x=59,
+		y=59,
+		feet_x=0,
+		feet_y=0,
+		on_platform=false,
+		move='idle', -- idle, run, sprint
+
+		-- sfx
+		sfx_jump=0,
+		sfx_land=1,
+
+		-- sprites
+		idle_s=32,
+		falling_s=38,
+		jumping_s=40,
 	}
 	--player anims
-	run={
+	run_anim={
 		f=1,
 		frames={34,36,34},
 		cur_s=34,
@@ -68,24 +85,36 @@ function i_player()
 end
 
 function u_player()
-	player.is_run=false
+	player.move='idle'
 	player.dx*=friction
 
 
 	--controls
-	if (btn(0)) then
+	if (btn(⬅️)) then
 		player.dx-=player.acc
 		player.flip_x=true
-		if (player.on_ground) then player.is_run=true end
+		-- player.move='run'
+		player.feet_x=player.x+8
+		if (player.on_platform) then player.move='run' end
 	end -- left
 
-	if (btn(1)) then
+	if (btn(➡️)) then
 		player.dx+=player.acc
 		player.flip_x=false
-		if (player.on_ground) then player.is_run=true end
+		-- player.move='run'
+		player.feet_x=player.x
+		if (player.on_platform) then player.move='run' end
 	end -- right
 
-	if (btnp(5) and player.on_ground == true) then --jump
+	if (btn(🅾️) ) then --speed boost
+		player.dx*=2
+		player.move='sprint'
+		friction=.5
+	else
+		friction=.75 --reset friction
+	end
+
+	if (btn(❎) and player.on_platform == true) then --jump
 		player.dy-=player.boost
 		sfx(player.sfx_jump)
 	end -- X
@@ -110,52 +139,52 @@ function u_player()
 
 
  --animate player run
- if run.f >= count(run.frames) then
-		run.f = 1
+ if run_anim.f >= count(run_anim.frames) then
+		run_anim.f = 1
 	end
 
-	if player.is_run == true then
-		run.f=run.f+run.timing
-	else
-		run.f=1
-	end
+	--running animations
+	if (player.move != 'idle') and player.on_platform then
+		--handle run animation
+		run_anim.f=run_anim.f+run_anim.timing
 
-	-- check for collision with platform
-	if (plat_collide(player)) then
-		if (player.on_ground == false) then
-			sfx(player.sfx_land)
+		if player.move == 'sprint' then
+			dust(player.feet_x,player.feet_y,1,{6,7},4)
 		end
-		player.on_ground=true
+	else
+		run_anim.f=1
+	end
+
+	--check for collision with platform
+	if (plat_collide(player)) then
+		player.on_platform=true
 		player.dy=0
 
 	else
-		player.on_ground=false
+		player.on_platform=false
 		player.dy+=gravity
 	end
+
+	--update feet pos
+	player.feet_y=player.y+16
+	player.feet_x=player.x+8
 end
 
 function d_player()
-	if (player.is_run) then
-		spr(run.frames[flr(run.f)], player.x, player.y,2,2,player.flip_x)
+	if ((player.move=='run' or player.move=='sprint') and player.on_platform) then
+		spr(run_anim.frames[flr(run_anim.f)], player.x, player.y, 2, 2, player.flip_x)
 	elseif (player.dy > 0) then
-		spr(player.falling_s, player.x, player.y,2,2,player.flip_x)
+		spr(player.falling_s, player.x, player.y, 2, 2, player.flip_x)
 	elseif (player.dy < 0) then
-		spr(player.jumping_s, player.x, player.y,2,2,player.flip_x)
-	else
-		spr(flr(player.idle_s), player.x, player.y,2,2,player.flip_x)
+		spr(player.jumping_s, player.x, player.y, 2, 2, player.flip_x)
+	else --idle
+		spr(flr(player.idle_s), player.x, player.y, 2, 2, player.flip_x)
 	end
 end
 -->8
 --gantt bars
 
-platforms={
-	yellow={
-		x0=0,
-		y0=100,
-		x1=128,
-		y1=110,
-	}
-}
+
 
 function move_bar(bar)
 	bar.x0-=bar.speed
@@ -172,13 +201,14 @@ function gen_bar()
 	local bar_y1=bar_y0+bar_height
 	local x0=128
 	local x1=x0+rnd_between(min_width,max_width)
+  local colors={1,2,3,4,5,6}
 
 	add(g.bars, {
 		x0=x0,
 		y0=bar_y0,
 		x1=x1,
 		y1=bar_y1,
-		color=10,
+		color=rnd(colors),
 		stroke=9,
 		speed=1
 	})
@@ -188,7 +218,6 @@ end
 --game loop funcs
 function i_gantt()
  --game object--
-  local colors={8,9,10,11,12}
 	g={
 		max_onscreen=3, --bars on screen
 		bars={},    --all bars
@@ -198,9 +227,9 @@ function i_gantt()
 	add(g.bars, {
 		x0=0,
 		y0=100,
-		x1=127,
+		x1=128,
 		y1=110,
-		color=rnd(colors),
+		color=10,
 		stroke=9,
 		speed=0
 	})
@@ -222,10 +251,6 @@ function u_gantt()
 			gen_bar()
 		end
 	end
-	-- if count(g.bars) < g.max_onscreen then
-	-- 	gen_bar()
-	-- end
-
 end
 
 function d_gantt()
@@ -246,10 +271,18 @@ function plat_collide(p)
 
 	for k,bar in ipairs(g.bars) do
 		if player.x+8 >= bar.x0 and player.x <= bar.x1 then
-			if player.y+16 >= bar.y0 and player.y+16 <= bar.y1 then
+			if player.feet_y >= bar.y0 and player.feet_y <= bar.y1 then
 				p.y=bar.y0-16
-				p.on_ground=true
-				-- p.x=p.dx+bar.x0
+				if (player.on_platform == false) then
+					sfx(player.sfx_land)
+					dust(player.feet_x,player.feet_y,2,{5,6,7},2)
+				end
+
+				p.on_platform=true
+				--player is op.x-=bar.speed
+				if (bar.speed > 0) then
+					p.x-=bar.speed
+				end
 				return true
 			end
 		end
@@ -290,6 +323,101 @@ function rnd_between(min, max)
 	return flr(rnd(max-min+1))+min
 end
 
+-->8
+--particles
+
+function i_particles()
+    --particles
+    effects = {}
+
+    --effects settings
+    explode_size = 5
+    explode_colors = {8,9,6,5}
+    explode_amount = 5
+
+    --sfx
+    -- trail_sfx = 0
+    -- explode_sfx = 1
+    -- fire_sfx = 2
+
+end
+
+function add_fx(x,y,die,dx,dy,grav,grow,shrink,r,c_table)
+    local fx={
+        x=x,
+        y=y,
+        t=0,
+        die=die,
+        dx=dx,
+        dy=dy,
+        grav=grav,
+        grow=grow,
+        shrink=shrink,
+        r=r,
+        c=0,
+        c_table=c_table
+    }
+    add(effects,fx)
+end
+
+function u_fx()
+    for fx in all(effects) do
+        --lifetime
+				fx.t+=1
+				if fx.t>fx.die then del(effects,fx) end
+
+        --color depends on lifetime
+        if fx.t/fx.die < 1/#fx.c_table then
+					fx.c=fx.c_table[1]
+				elseif fx.t/fx.die < 2/#fx.c_table then
+						fx.c=fx.c_table[2]
+				elseif fx.t/fx.die < 3/#fx.c_table then
+						fx.c=fx.c_table[3]
+				else
+						fx.c=fx.c_table[4]
+				end
+
+        --physics
+				if fx.grav then fx.dy+=.25 end
+				if fx.grow then fx.r+=.075 end
+				if fx.shrink then fx.r-=.075 end
+
+        --move
+				fx.x+=fx.dx
+				fx.y+=fx.dy
+    end
+end
+
+function d_fx()
+    for fx in all(effects) do
+        --draw pixel for size 1, draw circle for larger
+        if fx.r<=1 then
+            pset(fx.x,fx.y,fx.c)
+        else
+            circfill(fx.x,fx.y,fx.r,fx.c)
+        end
+    end
+end
+
+-- poof effect
+function dust(x,y,r,c_table,num)
+	for i=0, num do
+			--settings
+			add_fx(
+					x,         -- x
+					y,         -- y
+					2+rnd(2), -- die
+					rnd(2)-1,  -- dx
+					rnd(2)-2,  -- dy
+					true,      -- gravity
+					false,     -- grow
+					true,      -- shrink
+					r,         -- radius
+					c_table    -- color_table
+			)
+	end
+end
+
 __gfx__
 00000000011650000116500001165000011650000116500000000000000000000000000000000000000011115550000000001111555000000000111155500000
 00000000011560000115600001156000011560000115600000000000000000000000000000000000000111156565000000011115656500000001111565650000
@@ -309,19 +437,19 @@ __gfx__
 00000000050005000009a0000009a0000009a0000009a000000a9000000a9000000a9000000a9000000011011100000000110000110000000000000000000000
 00001111555000000000111115500000000011111550000000001111555000000000001155500000000000000000000000000000000000000000000000000000
 00011115656500000001111155650000000111115565000000011115656500000000011155650000000000000000000000000000000000000000000000000000
-00011115565500000001111155560000000111115556000000011115565500000000111155560000000000000000000000000000000000000000000000000000
-0001111555650000000111115565000000011111556500000001111555650000000011115511110000ccccccccccccc000000000000000000000000000000000
-0011111111111100001111111111110000111111111111000011111111111100000011111111000000ccccccccccccc000000000000000000000000000000000
-00055fffffff00000005555fffff00000005555fffff000000055fffffff00000fff111ff5f0000000ccccccccccccc000000000000000000000000000000000
-0005fff5ff5ff000000555fff5f50000000555fff5f500000005fff5ff5ff0000fff15fffff00000000000000000000000000000000000000000000000000000
-00005fffffff0000000055ffffff0000000055ffffff0000ff005fffffff00000ffff55ffff00000000000bbbbbbbbb000000000000000000000000000000000
-000015fffff000000000155ffff000000000155ffff00000ff1015fffff00ff001110555ff0fff00000000bbbbbbbbb000000000000000000000000000000000
-000111111100000000011111110000000000111111000000ff1111111dd11ff000111111111fff00000000bbbbbbbbb000000000000000000000000000000000
-001111111d100000ff1111111d1ff000000111111d00000000111111111110000001111111100000000000000000000000000000000000000000000000000000
-0011111111100000ff111111111ff0000001fff111f00000000011111110000000001111100000000000000000ddddd000000000000000000000000000000000
-00ffff111ff0000000001111100000000000fff11ff00000011d11111111100000001111100000000000000000ddddd000000000000000000000000000000000
-00fffddddff00000001dddddd110000000001dddd0000000011dddddddd110000000dd0dd00000000000000000ddddd000000000000000000000000000000000
-0000dd0dd0000000001ddd0d1110000000001dd11000000001100000001100000001dd0dd1000000000000000000000000000000000000000000000000000000
+00011115565500000001111155560000000111115556000000011115565500000000111155560000077777777777777700000000000000000000000000000000
+0001111555650000000111115565000000011111556500000001111555650000000011115511110007ccccccccccccc700000000000000000000000000000000
+0011111111111100001111111111110000111111111111000011111111111100000011111111000007ccccccccccccc700000000000000000000000000000000
+00055fffffff00000005555fffff00000005555fffff000000055fffffff00000fff111ff5f0000007ccccccccccccc700000000000000000000000000000000
+0005fff5ff5ff000000555fff5f50000000555fff5f500000005fff5ff5ff0000fff15fffff00000077777777777777700000000000000000000000000000000
+00005fffffff0000000055ffffff0000000055ffffff0000ff005fffffff00000ffff55ffff00000000007bbbbbbbbb700000000000000000000000000000000
+000015fffff000000000155ffff000000000155ffff00000ff1015fffff00ff001110555ff0fff00000007bbbbbbbbb700000000000000000000000000000000
+000111111100000000011111110000000000111111000000ff1111111dd11ff000111111111fff00000007bbbbbbbbb700000000000000000000000000000000
+001111111d100000ff1111111d1ff000000111111d00000000111111111110000001111111100000000007777777777700000000000000000000000000000000
+0011111111100000ff111111111ff0000001fff111f00000000011111110000000001111100000000000000007ddddd700000000000000000000000000000000
+00ffff111ff0000000001111100000000000fff11ff00000011d11111111100000001111100000000000000007ddddd700000000000000000000000000000000
+00fffddddff00000001dddddd110000000001dddd0000000011dddddddd110000000dd0dd00000000000000007ddddd700000000000000000000000000000000
+0000dd0dd0000000001ddd0d1110000000001dd11000000001100000001100000001dd0dd1000000000000000777777700000000000000000000000000000000
 00001101110000000011000011000000000000111000000000000000000000000001100011000000000000000000000000000000000000000000000000000000
 __label__
 77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
@@ -455,4 +583,4 @@ __label__
 
 __sfx__
 000c05001902024031280002c0002f0002f0002200022000220000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-190800000355302503015030050300503005030050300503005030050300503005030050300503005030050300503005030050300503005030050300503005030050300503005030050300503005030050300503
+180800000906302003010030000300003000030000300003000030000300003000030000300003000030000300003000030000300003000030000300003000030000300003000030000300003000030000300003
