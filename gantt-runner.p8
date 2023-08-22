@@ -117,9 +117,14 @@ function u_player()
 
 	--if run off screen warp to other side
 	--temp feature
-	if (player.x > 128) then player.x=-8 end
+	if (player.x > 896) then player.x=-8 end
 	if (player.x < -8) then player.x=128 end
 
+	-- player falls, reset
+	if (player.y > 120) then
+		player.x=-8
+		player.y=0
+	end
 
  --animate player run
  if run.f >= count(run.frames) then
