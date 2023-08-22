@@ -20,6 +20,7 @@ function _draw()
 	cls(0)
 	d_gantt()
 	d_milestone_anims()
+	camera_follow()
 	d_player()
 	spr(42, 110, 10, 2,2)
 	print("Gantt Runner", 0, 0, 7)
@@ -34,6 +35,17 @@ function _draw()
 
 
 end
+
+function camera_follow()
+	cam_x=player.x-60
+ 	cam_y=player.y-60
+
+	cam_x=mid(0, cam_x, 896)
+	cam_y=mid(0, cam_y, 128)
+
+	camera(cam_x, cam_y)
+end
+
 -->8
 --john
 function i_player()
