@@ -6,7 +6,7 @@ __lua__
 
 function _init()
 	debug=true
-
+	cam={x=0,y=0}
 	i_player()
 	i_gantt()
 	i_milestone_anims()
@@ -27,15 +27,19 @@ function _draw()
 	camera_follow()
 	d_fx()
 	d_player()
-	spr(42, 110, 2, 2,2) --tg logo
+
+	local screen_top=cam.y+128/2
+	local screen_bottom=cam.y+128
+
+	spr(42, cam.x+110, cam.y+2, 2,2) --tg logo
 
 
 	--debug stuff
 	if (debug) then
-		print("on ground: "..tostr(player.on_platform)..' status:'..player.move, 0, 0, 9)
-		print("dy:"..tostr(player.dy)..' dx:'..tostr(player.dx),0,10,7)
-		print("player.x:"..flr(player.x), 0, 20, 7)
-		print("player.y:"..flr(player.y), 0, 30, 7)
+		print("on ground: "..tostr(player.on_platform)..' status:'..player.move, cam.x, cam.y, 9)
+		print("dy:"..tostr(player.dy)..' dx:'..tostr(player.dx),cam.x, cam.y+10,7)
+		print("player.x:"..flr(player.x), cam.x, cam.y+20, 7)
+		print("player.y:"..flr(player.y), cam.x, cam.y+30, 7)
 		-- print("bars: "..count(g.bars))
 	end
 
@@ -43,13 +47,13 @@ function _draw()
 end
 
 function camera_follow()
-	cam_x=player.x-60
- 	cam_y=player.y-60
+	cam.x=player.x-60
+ 	cam.y=player.y-60
 
-	cam_x=mid(0, cam_x, 896)
-	cam_y=mid(0, cam_y, 128)
+	cam.x=mid(0, cam.x, 896)
+	cam.y=mid(0, cam.y, 128)
 
-	camera(cam_x, cam_y)
+	camera(cam.x, cam.y)
 end
 
 -->8
@@ -306,7 +310,7 @@ function plat_collide(p)
 				end
 
 				p.on_platform=true
-				--player is op.x-=bar.speed
+				-- keep player on platform
 				if (bar.speed > 0) then
 					p.x-=bar.speed
 				end
