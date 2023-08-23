@@ -40,8 +40,8 @@ function _draw()
 		print("dy:"..tostr(player.dy)..' dx:'..tostr(player.dx),cam.x, cam.y+10,7)
 		print("player.x:"..flr(player.x), cam.x, cam.y+20, 7)
 		print("player.y:"..flr(player.y), cam.x, cam.y+30, 7)
-		print("Milestones: "..player.milestones, cam.x, cam.y+40, 7)
 	end
+	print("Milestones: "..player.milestones, cam.x, cam.y+40, 7)
 
 
 end
