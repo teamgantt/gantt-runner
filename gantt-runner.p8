@@ -346,8 +346,8 @@ function i_milestone_anims()
 	milestones={}
 
 	add(milestones, {
-		x=rnd(50),
-		y=60,
+		x=mid(rnd(20),rnd(50),rnd(80)),
+		y=mid(rnd(20),rnd(50),rnd(80)),
 		f=frames[1]
 	})
 end
