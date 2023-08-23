@@ -26,6 +26,7 @@ function i_player()
 		-- sfx
 		sfx_jump=0,
 		sfx_land=1,
+		sfx_step=3,
 
 		-- sprites
 		idle_s=32,
@@ -38,6 +39,16 @@ function i_player()
 		frames={34,36,34},
 		cur_s=34,
 		timing=.4
+	}
+	run_sfx={
+		elapsed=0,
+		step=function(timing)
+			run_sfx.elapsed+=timing
+			if (run_sfx.elapsed >= 1) then
+				run_sfx.elapsed=0
+				sfx(player.sfx_step)
+			end
+		end
 	}
 end
 
@@ -52,7 +63,9 @@ function u_player()
 		player.flip_x=true
 		-- player.move='run'
 		player.feet_x=player.x+8
-		if (player.on_platform) then player.move='run' end
+		if (player.on_platform) then
+			player.move='run'
+		end
 	end -- left
 
 	if (btn(➡️)) then
@@ -76,10 +89,7 @@ function u_player()
 		player.dy-=player.boost
 		player.can_jump=false
 		sfx(player.sfx_jump)
-	elseif btnp(❎) and player.can_jump == true then --early jump
-		player.dy=-player.boost
-		player.can_jump=false
-		sfx(player.sfx_jump)
+		dust(player.feet_x-4,player.feet_y,2,3,{6,7},4)
 	end
 
 
@@ -109,8 +119,13 @@ function u_player()
 
 
  --animate player run
- if run_anim.f >= count(run_anim.frames) then
+  if run_anim.f >= count(run_anim.frames) then
 		run_anim.f = 1
+	end
+
+	--handle player sfx
+	if (player.on_platform and player.move =='run') then
+		run_sfx.step(.2)
 	end
 
 	--running animations
@@ -120,6 +135,7 @@ function u_player()
 
 		if player.move == 'sprint' then
 			dust(player.feet_x,player.feet_y,2,1,{6,7},4)
+			run_sfx.step(.3)
 		end
 	else
 		run_anim.f=1
