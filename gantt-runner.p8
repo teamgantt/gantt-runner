@@ -342,11 +342,11 @@ end
 function i_milestone_anims()
 	frames={18,19,20,21,22,23,24,25}
 	timing=.3
-	prev_milestones=0
+	prev_milestone_x=0
 	milestones={}
 
 	add(milestones, {
-		x=mid(rnd(20),rnd(50),rnd(80)),
+		x=rnd_between(prev_milestone_x, prev_milestone_x + 256),
 		y=mid(rnd(20),rnd(50),rnd(80)),
 		f=frames[1]
 	})
@@ -366,9 +366,9 @@ function u_milestone_anims()
 
  if (count(milestones) < 1) then
 	 add(milestones, {
-		 x=rnd(50),
-		 y=60,
-		 f=frames[1]
+		x=rnd_between(prev_milestone_x + 128, prev_milestone_x + 258),
+		y=mid(rnd(30),rnd(50),rnd(80)),
+		f=frames[1]
 	 })
  end
 end
@@ -388,6 +388,7 @@ function milestone_collide()
 	-- check for collision with milestone
 	for k,mile in ipairs(milestones) do
 		if (check_collision(player.x, player.y, 16, 16, mile.x, mile.y, 8, 8)) then
+			prev_milestone_x = mile.x
 			del(milestones, mile)
 			player.milestones+=1
 			sfx(2)
