@@ -5,7 +5,7 @@ __lua__
 --by tg devs
 
 function _init()
-	debug=true
+	debug=false
 	cam={x=0,y=0}
 	i_player()
 	i_gantt()
