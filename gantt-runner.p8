@@ -40,7 +40,7 @@ function _draw()
 		print("dy:"..tostr(player.dy)..' dx:'..tostr(player.dx),cam.x, cam.y+10,7)
 		print("player.x:"..flr(player.x), cam.x, cam.y+20, 7)
 		print("player.y:"..flr(player.y), cam.x, cam.y+30, 7)
-		-- print("bars: "..count(g.bars))
+		print("Milestones: "..player.milestones, cam.x, cam.y+40, 7)
 	end
 
 
@@ -340,33 +340,70 @@ end
 
 --TODO: put this somewhere else
 function i_milestone_anims()
-	mile={
-		cur_s=18,
-		s_min=18, --start sprite
-		s_max=25, --end sprite
-		timing=.2,
-		x=60,
-		y=60
-	}
+	frames={18,19,20,21,22,23,24,25}
+	timing=.3
+	prev_milestones=0
+	milestones={}
+
+	add(milestones, {
+		x=rnd(50),
+		y=60,
+		f=frames[1]
+	})
 end
 
 function u_milestone_anims()
  --animate milestone
- mile.cur_s=mile.cur_s+mile.timing
+ for k,mile in ipairs(milestones) do
+	mile.f=mile.f+timing
 
- if mile.cur_s >= mile.s_max+1 then
- 	mile.cur_s = mile.s_min
+	if mile.f >= frames[8] then
+		mile.f = frames[1]
+	end
  end
+ -- handle collisions
+ milestone_collide()
 
+ if (count(milestones) < 1) then
+	 add(milestones, {
+		 x=rnd(50),
+		 y=60,
+		 f=frames[1]
+	 })
+ end
 end
 
 
 function d_milestone_anims()
-	spr(flr(mile.cur_s), mile.x, mile.y)
+	for k,mile in ipairs(milestones) do
+		spr(flr(mile.f), mile.x, mile.y)
+	end
 end
 
 function rnd_between(min, max)
 	return flr(rnd(max-min+1))+min
+end
+
+function milestone_collide()
+	-- check for collision with milestone
+	for k,mile in ipairs(milestones) do
+		if (check_collision(player.x, player.y, 16, 16, mile.x, mile.y, 8, 8)) then
+			del(milestones, mile)
+			player.milestones+=1
+			sfx(2)
+		end
+	end
+end
+
+-- Collision detection function;
+-- Returns true if two boxes overlap, false if they don't;
+-- x1,y1 are the top-left coords of the first box, while w1,h1 are its width and height;
+-- x2,y2,w2 & h2 are the same, but for the second box.
+function check_collision(x1,y1,w1,h1, x2,y2,w2,h2)
+  return x1 < x2+w2 and
+         x2 < x1+w1 and
+         y1 < y2+h2 and
+         y2 < y1+h1
 end
 
 -->8
@@ -630,3 +667,4 @@ __label__
 __sfx__
 000c05001902024031280002c0002f0002f0002200022000220000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 180800000906302003010030000300003000030000300003000030000300003000030000300003000030000300003000030000300003000030000300003000030000300003000030000300003000030000300003
+000b00002f03033050000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
