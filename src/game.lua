@@ -1,9 +1,11 @@
 function i_gantt()
 	--game object--
 	 g={
-		 max_onscreen=3, --bars on screen
+		 max_bars=4,
+		 max_day_lines=16,
 		 bars={},    --all bars
-		 day_lines={}
+		 day_lines={},
+		 line_color=6
 	 }
 
 	 -- stationary starting block, temp
@@ -16,6 +18,14 @@ function i_gantt()
 		 stroke=9,
 		 speed=0
 	 })
+
+	 -- day lines
+	 for i=1,g.max_day_lines do
+		 local x=cam.x+16*i
+		 local y0=-128
+		 local y1=256
+		 add(g.day_lines, {x=x, y0=y0, y1=y1})
+	 end
  end
 
 
@@ -58,6 +68,13 @@ function gen_bar()
 	})
 end
 
+function gen_day_line()
+	local x=g.day_lines[#g.day_lines].x+16
+	local y0=-128
+	local y1=256
+	add(g.day_lines, {x=x, y0=y0, y1=y1})
+end
+
 
 function u_gantt()
  	--move bars
@@ -69,17 +86,34 @@ function u_gantt()
 		end
 	end
 
-	local gap_limit=48
+	local gap_limit=16
 	for k,v in ipairs(g.bars) do
-		if v.x1 > gap_limit and count(g.bars) < g.max_onscreen then
+		if v.x1 > gap_limit and count(g.bars) < g.max_bars then
 			gen_bar()
+		end
+	end
+
+	-- move day lines
+	for k,day_line in ipairs(g.day_lines) do
+		-- day_line.x-=
+		if day_line.x < cam.x - 128 then
+			del(g.day_lines, day_line)
+		end
+
+		if count(g.day_lines) < g.max_day_lines then
+			gen_day_line()
 		end
 	end
 end
 
 function d_gantt()
+	for k,day_line in ipairs(g.day_lines) do
+		line(day_line.x, day_line.y0, day_line.x, day_line.y1, g.line_color)
+	end
+
 	for k,bar in ipairs(g.bars) do
 		rectfill(bar.x0,bar.y0,bar.x1,bar.y1,bar.color)
 		rect(bar.x0,bar.y0,bar.x1,bar.y1,bar.stroke)
 	end
+
 end

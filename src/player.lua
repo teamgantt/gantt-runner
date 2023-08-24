@@ -29,7 +29,7 @@ function i_player()
 			player.coyote_time=0
 			player.dy=-player.boost
 			sfx(player.sfx_jump)
-			dust(player.feet_x-4,player.feet_y,2,3,{6,7},4)
+			dust(player.feet_x-4,player.feet_y,2,3,{5,6,7},4)
 		end,
 
 		-- sfx
@@ -64,7 +64,6 @@ end
 function u_player()
 	player.move='idle'
 	player.dx*=friction
-
 
 	--controls
 	if (btn(⬅️)) then
@@ -129,13 +128,11 @@ function u_player()
 
 	--if run off screen warp to other side
 	--temp feature
-	if (player.x > 896) then player.x=-8 end
 	if (player.x < -8) then player.x=128 end
 
 	-- player falls, reset
-	if (player.y > 120) then
-		player.x=-8
-		player.y=0
+	if (player.y > 128) then
+		extcmd("reset")
 	end
 
 
@@ -155,7 +152,7 @@ function u_player()
 		run_anim.f=run_anim.f+run_anim.timing
 
 		if player.move == 'sprint' then
-			dust(player.feet_x,player.feet_y,2,1,{6,7},4)
+			dust(player.feet_x,player.feet_y,2,1,{5,6,7},4)
 			run_sfx.step(.3)
 		end
 	else
@@ -178,9 +175,9 @@ end
 
 function d_player()
 	if debug then
-		print("coyote_time: "..player.coyote_time, player.x, player.y-6, 7)
-		print('status:'..player.move, player.x, player.y-12, 7)
-		print("will jump:"..tostr(player.will_jump), player.x, player.y-18, 7)
+		print("coyote_time: "..player.coyote_time, player.x, player.y-6, 1)
+		print('status:'..player.move, player.x, player.y-12, 1)
+		print("will jump:"..tostr(player.will_jump), player.x, player.y-18, 1)
 	end
 
 	if ((player.move=='run' or player.move=='sprint') and player.on_platform) then
