@@ -17,11 +17,20 @@ function i_player()
 		flip_x=false,
 		x=59,
 		y=59,
+		coyote_time=0,
 		feet_x=0,
 		feet_y=0,
 		on_platform=false,
-		can_jump=false,
+		will_jump=false,
 		move='idle', -- idle, run, sprint
+
+		-- functions
+		jump=function()
+			player.coyote_time=0
+			player.dy=-player.boost
+			sfx(player.sfx_jump)
+			dust(player.feet_x-4,player.feet_y,2,3,{6,7},4)
+		end,
 
 		-- sfx
 		sfx_jump=0,
@@ -85,11 +94,14 @@ function u_player()
 	end
 
 	--jumping
-	if btnp(❎) and player.on_platform == true then --jump
-		player.dy-=player.boost
-		player.can_jump=false
-		sfx(player.sfx_jump)
-		dust(player.feet_x-4,player.feet_y,2,3,{6,7},4)
+	if btnp(❎) and (player.on_platform == true or player.coyote_time > 0) then --jump
+		player.jump()
+	end
+
+	--player hit jump button before landing in grace zone
+	if player.on_platform and player.will_jump then
+		player.jump()
+		player.will_jump=false
 	end
 
 
@@ -104,6 +116,15 @@ function u_player()
 	--apply dx and dy to player position
 	player.x+=player.dx
 	player.y+=player.dy
+
+	--coyote time
+	if (player.on_platform) then
+		player.coyote_time=8 --reset
+	elseif (player.dy > 0 and player.coyote_time > 0) then
+		player.coyote_time-=1
+	elseif (player.dy < 0) then
+		player.coyote_time=0 --remove during jump
+	end
 
 
 	--if run off screen warp to other side
@@ -156,6 +177,12 @@ function u_player()
 end
 
 function d_player()
+	if debug then
+		print("coyote_time: "..player.coyote_time, player.x, player.y-6, 7)
+		print('status:'..player.move, player.x, player.y-12, 7)
+		print("will jump:"..tostr(player.will_jump), player.x, player.y-18, 7)
+	end
+
 	if ((player.move=='run' or player.move=='sprint') and player.on_platform) then
 		spr(run_anim.frames[flr(run_anim.f)], player.x, player.y, 2, 2, player.flip_x)
 	elseif (player.dy > 0) then

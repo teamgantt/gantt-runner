@@ -8,8 +8,8 @@ function plat_collide(p)
 	for k,bar in ipairs(g.bars) do
 		if player.x+8 >= bar.x0 and player.x <= bar.x1 then
 			--early jump allowance 4px
-			if player.feet_y+6 >= bar.y0 and player.feet_y <= bar.y1 then
-				player.can_jump=true
+			if btnp(❎) and player.feet_y >= bar.y0-10 and player.feet_y <= bar.y1 then
+				player.will_jump=true
 			end
 
 			--check if player is within platform y range
