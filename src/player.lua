@@ -1,6 +1,10 @@
 function i_player()
 	gravity=0.5
 	friction=.75
+	run_anim={
+		f=1,
+		timing=.4
+	}
 	player={
 		-- player stats
 		milestones=0,
@@ -38,16 +42,22 @@ function i_player()
 		sfx_step=3,
 
 		-- sprites
-		idle_s=32,
-		falling_s=38,
-		jumping_s=40,
-	}
-	--player anims
-	run_anim={
-		f=1,
-		frames={34,36,34},
-		cur_s=34,
-		timing=.4
+		--player anims
+			john={
+				cur_s=32,
+				idle_s=32,
+				falling_s=38,
+				jumping_s=40,
+				run_frames={34,36,34}
+			},
+			nathan={
+				cur_s=64,
+				idle_s=64,
+				falling_s=72,
+				jumping_s=70, --change later
+				run_frames={66,68,66}
+			}
+
 	}
 	run_sfx={
 		elapsed=0,
@@ -137,7 +147,7 @@ function u_player()
 
 
  --animate player run
-  if run_anim.f >= count(run_anim.frames) then
+  if run_anim.f >= count(player[g.character].run_frames) then
 		run_anim.f = 1
 	end
 
@@ -181,12 +191,12 @@ function d_player()
 	end
 
 	if ((player.move=='run' or player.move=='sprint') and player.on_platform) then
-		spr(run_anim.frames[flr(run_anim.f)], player.x, player.y, 2, 2, player.flip_x)
+		spr(player[g.character].run_frames[flr(run_anim.f)], player.x, player.y, 2, 2, player.flip_x)
 	elseif (player.dy > 0) then
-		spr(player.falling_s, player.x, player.y, 2, 2, player.flip_x)
+		spr(player[g.character].falling_s, player.x, player.y, 2, 2, player.flip_x)
 	elseif (player.dy < 0) then
-		spr(player.jumping_s, player.x, player.y, 2, 2, player.flip_x)
+		spr(player[g.character].jumping_s, player.x, player.y, 2, 2, player.flip_x)
 	else --idle
-		spr(flr(player.idle_s), player.x, player.y, 2, 2, player.flip_x)
+		spr(flr(player[g.character].idle_s), player.x, player.y, 2, 2, player.flip_x)
 	end
 end

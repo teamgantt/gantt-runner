@@ -1,11 +1,13 @@
-function i_gantt()
+function i_game()
 	--game object--
 	 g={
-		 max_bars=4,
-		 max_day_lines=16,
-		 bars={},    --all bars
-		 day_lines={},
-		 line_color=6
+		scene="select",
+		max_bars=4,
+		max_day_lines=16,
+		bars={},    --all bars
+		day_lines={},
+		line_color=6,
+		character='nathan'
 	 }
 
 	 -- stationary starting block, temp
@@ -76,12 +78,12 @@ function gen_day_line()
 end
 
 
-function u_gantt()
+function u_game()
  	--move bars
 	for idx,bar in ipairs(g.bars) do
 		move_bar(bar)
 		-- Cleanup
-		if bar.speed != 0 and bar.x1 < player.x - 80 then
+		if bar.speed != 0 and bar.x1 < cam.x - 80 then
 			del(g.bars, bar)
 		end
 	end
@@ -106,7 +108,7 @@ function u_gantt()
 	end
 end
 
-function d_gantt()
+function d_game()
 	for k,day_line in ipairs(g.day_lines) do
 		line(day_line.x, day_line.y0, day_line.x, day_line.y1, g.line_color)
 	end
