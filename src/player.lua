@@ -48,14 +48,16 @@ function i_player()
 				idle_s=32,
 				falling_s=38,
 				jumping_s=40,
-				run_frames={34,36,34}
+				run_frames={34,36,34},
+				sprint_frames={34,36,34},
 			},
 			nathan={
 				cur_s=64,
 				idle_s=64,
 				falling_s=72,
 				jumping_s=70, --change later
-				run_frames={66,68,66}
+				run_frames={66,68,66},
+				sprint_frames={96,98,100}
 			}
 
 	}
@@ -96,7 +98,6 @@ function u_player()
 
 	if (btn(🅾️) and (player.move=='run' or player.on_platform==false)) then --speed boost
 		player.dx*=2
-		player.move='sprint'
 		friction=.5
 	else
 		friction=.75 --reset friction
@@ -113,6 +114,10 @@ function u_player()
 		player.will_jump=false
 	end
 
+	--sprinting
+	if player.dx > 3.5 or player.dx < -3.5 then
+		player.move='sprint'
+	end
 
 	--limit left/right speed
 	player.dx=mid(-player.max_dx,player.dx,player.max_dx)
@@ -190,8 +195,10 @@ function d_player()
 		print("will jump:"..tostr(player.will_jump), player.x, player.y-18, 1)
 	end
 
-	if ((player.move=='run' or player.move=='sprint') and player.on_platform) then
+	if (player.move=='run' and player.on_platform) then
 		spr(player[g.character].run_frames[flr(run_anim.f)], player.x, player.y, 2, 2, player.flip_x)
+	elseif (player.move=='sprint' and player.on_platform) then
+		spr(player[g.character].sprint_frames[flr(run_anim.f)], player.x, player.y, 2, 2, player.flip_x)
 	elseif (player.dy > 0) then
 		spr(player[g.character].falling_s, player.x, player.y, 2, 2, player.flip_x)
 	elseif (player.dy < 0) then
