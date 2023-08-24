@@ -1,3 +1,6 @@
+function i_camera_follow()
+	cam={x=0,y=0}
+end
 
 function d_camera_follow()
 	cam.x=player.x-60

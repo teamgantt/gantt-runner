@@ -16,7 +16,7 @@ __lua__
 
 function _init()
 	debug=true
-	cam={x=0,y=0}
+	i_camera_follow()
 	i_player()
 	i_gantt()
 	i_milestone_anims()
