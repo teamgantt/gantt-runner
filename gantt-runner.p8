@@ -12,6 +12,7 @@ __lua__
 #include src/player.lua
 #include src/camera.lua
 #include src/game.lua
+#include src/ui.lua
 
 function _init()
 	debug=true
@@ -36,12 +37,7 @@ function _draw()
 	d_milestone_anims()
 	d_camera_follow()
 	d_player()
-
-	local screen_top=cam.y+128/2
-	local screen_bottom=cam.y+128
-
-	spr(42, cam.x+110, cam.y+2, 2,2) --tg logo
-
+	d_ui();
 
 	--debug stuff
 	if (debug) then
@@ -49,9 +45,6 @@ function _draw()
 		print("p.feetx:"..flr(player.feet_x), cam.x, cam.y+20, 7)
 		print("p.feety:"..flr(player.feet_y), cam.x, cam.y+30, 7)
 	end
-	print("milestones: "..player.milestones, cam.x+2, cam.y+2, 7)
-
-
 end
 
 
