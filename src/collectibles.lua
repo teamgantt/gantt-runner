@@ -1,6 +1,6 @@
 function i_milestone_anims()
-	frames={18,19,20,21,22,23,24,25}
-	timing=.3
+	frames={18, 18, 18, 18, 18, 19, 20, 21, 21}
+	timing=.15
 	prev_milestone_x=128
 	milestones={}
 
@@ -16,7 +16,7 @@ function u_milestone_anims()
 	for k,mile in ipairs(milestones) do
 		mile.f=mile.f+timing
 
-		if mile.f >= frames[8] then
+		if mile.f > frames[9] then
 			mile.f = frames[1]
 		end
 	end
