@@ -55,9 +55,22 @@ function gen_bar()
 	local bar_height=8
 	local bar_y0=rnd(bar_areas)
 	local bar_y1=bar_y0+bar_height
+	local colors={1,2,3,4,5,6}
 	local x0=cam.x+rnd_between(128, 200)
+	
+	if count(g.bars) > 1 then
+		local last_bar = g.bars[count(g.bars)]
+
+		if last_bar.y0 == bar_y0 then
+			x0=last_bar.x1+rnd_between(70, 110)
+		else
+			x0=rnd_between(last_bar.x1 - rnd(16), last_bar.x1 + 100)
+		end
+	end
+
+
 	local x1=x0+rnd_between(min_width,max_width)
-  local colors={1,2,3,4,5,6}
+
 
 	add(g.bars, {
 		x0=x0,
@@ -74,6 +87,7 @@ function gen_day_line()
 	local x=g.day_lines[#g.day_lines].x+16
 	local y0=-128
 	local y1=256
+
 	add(g.day_lines, {x=x, y0=y0, y1=y1})
 end
 
@@ -88,11 +102,14 @@ function u_game()
 		end
 	end
 
-	local gap_limit=16
-	for k,v in ipairs(g.bars) do
-		if v.x1 > gap_limit and count(g.bars) < g.max_bars then
-			gen_bar()
-		end
+	-- generate new bars
+	local last_bar = g.bars[count(g.bars)]
+	
+	if count(g.bars) == 1 then
+		gen_bar()
+	end
+	if last_bar.x1 < cam.x + 100 and count(g.bars) < g.max_bars then
+		gen_bar()
 	end
 
 	-- move day lines
@@ -117,5 +134,4 @@ function d_game()
 		rectfill(bar.x0,bar.y0,bar.x1,bar.y1,bar.color)
 		rect(bar.x0,bar.y0,bar.x1,bar.y1,bar.stroke)
 	end
-
 end
