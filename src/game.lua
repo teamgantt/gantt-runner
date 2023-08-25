@@ -41,9 +41,9 @@ platforms={
 	}
 }
 -- where moving bars can render
-bar_areas={50, 60, 70, 80}
+bar_areas={30, 40, 50, 60, 70, 80, 90}
 
-function move_bar(bar)
+function move_bar(bar) 
 	bar.x0-=bar.speed
 	bar.x1-=bar.speed
 end
