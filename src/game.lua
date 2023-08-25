@@ -61,10 +61,11 @@ function gen_bar()
 	if count(g.bars) > 1 then
 		local last_bar = g.bars[count(g.bars)]
 
+		-- if new bar is in the same area
 		if last_bar.y0 == bar_y0 then
-			x0=last_bar.x1+rnd_between(70, 110)
+			x0=last_bar.x1+rnd_between(50, 90)
 		else
-			x0=rnd_between(last_bar.x1 - rnd(16), last_bar.x1 + 100)
+			x0=rnd_between(last_bar.x1-rnd(16), last_bar.x1+90)
 		end
 	end
 
@@ -108,7 +109,7 @@ function u_game()
 	if count(g.bars) == 1 then
 		gen_bar()
 	end
-	if last_bar.x1 < cam.x + 100 and count(g.bars) < g.max_bars then
+	if last_bar.x1 < cam.x + 128 and count(g.bars) < g.max_bars then
 		gen_bar()
 	end
 
