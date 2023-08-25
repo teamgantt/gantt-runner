@@ -25,14 +25,7 @@ end
 
 function _update()
 	if (g.scene == 'select') then
-		if (btn(🅾️)) then
-			g.scene = 'game'
-			g.character = 'john'
-		end
-		if (btn(❎)) then
-			g.scene = 'game'
-			g.character = 'nathan'
-		end
+		u_ui_start()
 	else
 		u_player()
 		u_game()
@@ -46,16 +39,14 @@ function _draw()
 	d_fx()
 
 	if g.scene =='select' then
-		print('select character:', cam.x+20, 30)
-		print("z for lil' john", cam.x+20, 40)
-		print('x for barrel nathan', cam.x+20, 50)
+		d_ui_start();
 	else
 		d_game()
 		d_milestone_anims()
 		d_camera_follow()
 		d_player()
+		d_ui();
 	end
-	d_ui();
 
 	--debug stuff
 	if (debug) then
