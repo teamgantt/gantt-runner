@@ -44,7 +44,7 @@ end
 
 function d_milestone_anims()
 	for k,mile in ipairs(milestones) do
-		print(flr(mile.f), mile.x, mile.y+8)
+		if debug then print(flr(mile.f), mile.x, mile.y+8) end
 		spr(mile_frames[flr(mile.f)], mile.x, mile.y)
 	end
 end

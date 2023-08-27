@@ -1,5 +1,6 @@
 function i_player()
 	gravity=0.5
+	fall_gravity=1.3
 	friction=.75
 	run_anim={
 		f=1,
@@ -26,18 +27,25 @@ function i_player()
 		feet_y=0,
 		on_platform=false,
 		will_jump=false,
-		move='idle', -- idle, run, sprint
+		move='idle', -- idle, run, sprint, duck
 
 		-- functions
 		jump=function()
+			if player.move== 'duck' then
+				player.dy=-player.boost*1.25
+				sfx(player.sfx_jump2)
+			else
+				player.dy=-player.boost
+				sfx(player.sfx_jump)
+			end
+
 			player.coyote_time=0
-			player.dy=-player.boost
-			sfx(player.sfx_jump)
 			dust(player.feet_x-4,player.feet_y,2,3,{5,6,7},4)
 		end,
 
 		-- sfx
 		sfx_jump=0,
+		sfx_jump2=4,
 		sfx_land=1,
 		sfx_step=3,
 
@@ -48,6 +56,7 @@ function i_player()
 				idle_s=32,
 				falling_s=38,
 				jumping_s=40,
+				duck_s=10,
 				run_frames={34,36,34},
 				sprint_frames={34,36,34},
 			},
@@ -55,7 +64,8 @@ function i_player()
 				cur_s=64,
 				idle_s=64,
 				falling_s=72,
-				jumping_s=70, --change later
+				jumping_s=70,
+				duck_s=74,
 				run_frames={66,68,66},
 				sprint_frames={96,98,100}
 			}
@@ -95,6 +105,10 @@ function u_player()
 		player.feet_x=player.x
 		if (player.on_platform) then player.move='run' end
 	end -- right
+
+	if (btn(⬇️) and player.on_platform and not (btn(⬅️) or btn(➡️))) then
+		player.move='duck'
+	end
 
 	if (btn(🅾️) and (player.move=='run' or player.on_platform==false)) then --speed boost
 		player.dx*=2
@@ -180,7 +194,12 @@ function u_player()
 		player.dy=0
 	else
 		player.on_platform=false
-		player.dy+=gravity --apply gravity
+		--apply gravity based on if player is holding jump
+		if btn(❎) then
+			player.dy+=gravity
+		else
+			player.dy+=fall_gravity
+		end
 	end
 
 	--update feet pos
@@ -203,6 +222,8 @@ function d_player()
 		spr(player[g.character].falling_s, player.x, player.y, 2, 2, player.flip_x)
 	elseif (player.dy < 0) then
 		spr(player[g.character].jumping_s, player.x, player.y, 2, 2, player.flip_x)
+	elseif (player.move=='duck') then
+		spr(player[g.character].duck_s, player.x, player.y, 2, 2, player.flip_x)
 	else --idle
 		spr(flr(player[g.character].idle_s), player.x, player.y, 2, 2, player.flip_x)
 	end
