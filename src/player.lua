@@ -23,7 +23,7 @@ function i_player()
 		x=59,
 		y=59,
 		coyote_time=0,
-		feet_x=0,
+		feet_x=8,
 		feet_y=0,
 		on_platform=false,
 		will_jump=false,
@@ -40,7 +40,7 @@ function i_player()
 			end
 
 			player.coyote_time=0
-			dust(player.feet_x-4,player.feet_y,2,3,{5,6,7},4)
+			dust(player.feet_x-4,player.feet_y,2,5,{5,6,7},4)
 		end,
 
 		-- sfx
