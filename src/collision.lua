@@ -1,37 +1,47 @@
 
+function collide_map(obj,dir,flag)
+	 local x=obj.x  local y=obj.y
+	 local w=obj.w  local h=obj.h
+
+	 local x1=0	 local y1=0
+	 local x2=0  local y2=0
+
+	 if dir=="left" then
+		 x1=x-1  y1=y
+		 x2=x    y2=y+h-1
+
+	 elseif dir=="right" then
+		 x1=x+w-1    y1=y
+		 x2=x+w  y2=y+h-1
+
+	 elseif dir=="up" then
+		 x1=x+2    y1=y-1
+		 x2=x+w-3  y2=y
+
+	 elseif dir=="down" then
+		 x1=x+2      y1=y+h
+		 x2=x+w-3    y2=y+h
+	 end
+
+	 --pixels to tiles
+	 x1/=8    y1/=8
+	 x2/=8    y2/=8
+
+	 if fget(mget(x1,y1), flag)
+	 or fget(mget(x1,y2), flag)
+	 or fget(mget(x2,y1), flag)
+	 or fget(mget(x2,y2), flag) then
+		 return true
+	 else
+		 return false
+	 end
+
+end
+
 function plat_collide(p)
-	-- check for collision with platform
 	if (p.dy < 0) then --moving upwards
 		return false
 	end
-
-	for k,bar in ipairs(g.bars) do
-		if player.x+8 >= bar.x0 and player.x <= bar.x1 then
-			--early jump allowance 4px
-			if btnp(❎) and player.feet_y >= bar.y0-10 and player.feet_y <= bar.y1 then
-				player.will_jump=true
-			end
-
-			--check if player is within platform y range
-			if player.feet_y >= bar.y0 and player.feet_y <= bar.y1 then
-				p.y=bar.y0-16 --ensure player is on top of platform
-
-				if (player.on_platform == false) then
-					sfx(player.sfx_land)
-					dust(player.feet_x,player.feet_y+2,2,4,{5,6,7},3)
-				end
-
-				p.on_platform=true
-
-				-- keep player on platform
-				if (bar.speed > 0) then
-					p.x-=bar.speed
-				end
-				return true
-			end
-		end
-	end
-	return false
 end
 
 
@@ -56,4 +66,11 @@ function check_collision(x1,y1,w1,h1, x2,y2,w2,h2)
          x2 < x1+w1 and
          y1 < y2+h2 and
          y2 < y1+h1
+end
+
+
+function d_debug_hitboxes()
+	if (debug) then
+		rect(player.x, player.y, player.x+player.w, player.y+player.h, 8)
+	end
 end
