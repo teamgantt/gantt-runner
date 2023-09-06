@@ -6,19 +6,20 @@ function i_milestone_anims()
 	prev_milestone_x=128
 	milestones={}
 
-	add(milestones, {
-		x=40,
-		y=40,
-		f=1,
-		animate=tick_frames
-	})
+	for x=1,128 do
+		for y=1,16 do
+			if (fget(mget(x,y), 1)) then
+				add(milestones, {
+					x=x*8,
+					y=y*8,
+					f=1,
+					animate=tick_frames
+				})
 
-	add(milestones, {
-		x=rnd_between(prev_milestone_x, prev_milestone_x + 256),
-		y=mid(rnd(20),rnd(50),rnd(80)),
-		f=1,
-		animate=tick_frames
-	})
+				mset(x,y,0)
+			end
+		end
+	end
 end
 
 function u_milestone_anims()
@@ -30,15 +31,6 @@ function u_milestone_anims()
 
 	-- handle collisions
 	milestone_collide()
-
-	if (count(milestones) < 1) then
-		add(milestones, {
-			x=rnd_between(prev_milestone_x + 128, prev_milestone_x + 258),
-			y=mid(rnd(30),rnd(50),rnd(80)),
-			f=1,
-			animate=tick_frames
-		})
-	end
 end
 
 

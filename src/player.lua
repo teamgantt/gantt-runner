@@ -19,13 +19,18 @@ function i_player()
 		max_dy=4,
 
 		-- player state
+		tile=0,
 		flip_x=false,
-		x=59,
-		y=59,
+		h=16,
+		w=12,
+		x=40,
+		y=30,
 		coyote_time=0,
 		feet_x=8,
 		feet_y=0,
 		on_platform=false,
+		jumping=false,
+		falling=false,
 		will_jump=false,
 		move='idle', -- idle, run, sprint, duck
 
@@ -37,6 +42,7 @@ function i_player()
 			else
 				player.dy=-player.boost
 				sfx(player.sfx_jump)
+				player.on_platform=false
 			end
 
 			player.coyote_time=0
@@ -91,8 +97,6 @@ function u_player()
 	if (btn(⬅️)) then
 		player.dx-=player.acc
 		player.flip_x=true
-		-- player.move='run'
-		player.feet_x=player.x+8
 		if (player.on_platform) then
 			player.move='run'
 		end
@@ -101,8 +105,6 @@ function u_player()
 	if (btn(➡️)) then
 		player.dx+=player.acc
 		player.flip_x=false
-		-- player.move='run'
-		player.feet_x=player.x
 		if (player.on_platform) then player.move='run' end
 	end -- right
 
@@ -155,16 +157,6 @@ function u_player()
 	end
 
 
-	--if run off screen warp to other side
-	--temp feature
-	if (player.x < -8) then player.x=128 end
-
-	-- player falls, reset
-	if (player.y > 128) then
-		extcmd("reset")
-	end
-
-
  --animate player run
   if run_anim.f >= count(player[g.character].run_frames) then
 		run_anim.f = 1
@@ -188,23 +180,32 @@ function u_player()
 		run_anim.f=1
 	end
 
-	--check for collision with platform
-	if (plat_collide(player)) then
-		player.on_platform=true
-		player.dy=0
+	--apply gravity based on if player is holding jump
+	if btn(❎) then
+		player.dy+=gravity
 	else
-		player.on_platform=false
-		--apply gravity based on if player is holding jump
-		if btn(❎) then
-			player.dy+=gravity
-		else
-			player.dy+=fall_gravity
-		end
+		player.dy+=fall_gravity
 	end
 
+	--check for collision with platform
+	if (player.dy > 0 and collide_map(player,"down",0)) then
+		player.on_platform=true
+		player.falling=false
+		player.dy=0
+		player.coyote_time=8
+		player.y-=((player.y+player.h+1)%8)-1
+	end
+
+
 	--update feet pos
-	player.feet_y=player.y+16
-	player.feet_x=player.x+8
+	player.feet_y=player.y+player.h
+	player.feet_x=player.x+player.w/2
+
+	-- player falls, reset
+	if (player.y > 256) then
+		extcmd("reset")
+	end
+
 end
 
 function d_player()
@@ -212,19 +213,35 @@ function d_player()
 		print("coyote_time: "..player.coyote_time, player.x, player.y-6, 1)
 		print('status:'..player.move, player.x, player.y-12, 1)
 		print("will jump:"..tostr(player.will_jump), player.x, player.y-18, 1)
+		print("x:"..flr(player.x), player.x, player.y-30, 1)
+		print("y:"..flr(player.y), player.x, player.y-36, 1)
+		print("dy:"..tostr(player.dy),cam.x, cam.y+10,11)
+		print("dx:"..tostr(player.dx),cam.x, cam.y+16,11)
+		print("falling: "..tostr(player.falling),cam.x, cam.y+22,11)
+
+	end
+
+	--offset for player sprite
+	local x_offset= 0
+	if (player.dx < 0) then
+		x_offset=player.x-2
+	elseif player.dx > 0 then
+		x_offset=player.x-1
+	else
+		x_offset=player.x
 	end
 
 	if (player.move=='run' and player.on_platform) then
-		spr(player[g.character].run_frames[flr(run_anim.f)], player.x, player.y, 2, 2, player.flip_x)
+		spr(player[g.character].run_frames[flr(run_anim.f)], x_offset, player.y, 2, 2, player.flip_x)
 	elseif (player.move=='sprint' and player.on_platform) then
-		spr(player[g.character].sprint_frames[flr(run_anim.f)], player.x, player.y, 2, 2, player.flip_x)
+		spr(player[g.character].sprint_frames[flr(run_anim.f)], x_offset, player.y, 2, 2, player.flip_x)
 	elseif (player.dy > 0) then
-		spr(player[g.character].falling_s, player.x, player.y, 2, 2, player.flip_x)
+		spr(player[g.character].falling_s, x_offset, player.y, 2, 2, player.flip_x)
 	elseif (player.dy < 0) then
-		spr(player[g.character].jumping_s, player.x, player.y, 2, 2, player.flip_x)
+		spr(player[g.character].jumping_s, x_offset, player.y, 2, 2, player.flip_x)
 	elseif (player.move=='duck') then
-		spr(player[g.character].duck_s, player.x, player.y, 2, 2, player.flip_x)
+		spr(player[g.character].duck_s, x_offset, player.y, 2, 2, player.flip_x)
 	else --idle
-		spr(flr(player[g.character].idle_s), player.x, player.y, 2, 2, player.flip_x)
+		spr(flr(player[g.character].idle_s), x_offset, player.y, 2, 2, player.flip_x)
 	end
 end
