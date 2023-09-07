@@ -1,25 +1,43 @@
 function i_game()
 	--game object--
 	 g={
-		scene="select",
+		total_milestones=0,
+		status="", --running, win, lose
+		scene="menu", --menu, select, game, summary
+		start_t=t(),
+		cur_t=0,
+		end_t=0,
 		max_bars=4,
 		max_day_lines=16,
 		bars={},    --all bars
 		day_lines={},
 		line_color=6,
-		character='john'
-	 }
+		character='nathan',
 
-	 -- stationary starting block, temp
-	 add(g.bars, {
-		 x0=0,
-		 y0=100,
-		 x1=128,
-		 y1=110,
-		 color=10,
-		 stroke=9,
-		 speed=0
-	 })
+		-- methods
+		start_level=function()
+			if (g.status!="running") then
+				setup_milestones()
+			end
+			player.milestones=0
+			g.scene="game"
+			g.status="running"
+			player.x=40
+			player.y=60
+		end,
+
+		end_level=function(type)
+			if (type == "win") then
+				g.status="win"
+				sfx(8)
+			else
+				g.status="lose"
+				sfx(6)
+			end
+			g.end_t = g.cur_t
+			g.scene="summary"
+		end,
+	 }
 
 	 -- day lines
 	 for i=1,g.max_day_lines do
@@ -71,17 +89,6 @@ function gen_bar()
 
 
 	local x1=x0+rnd_between(min_width,max_width)
-
-
-	add(g.bars, {
-		x0=x0,
-		y0=bar_y0,
-		x1=x1,
-		y1=bar_y1,
-		color=rnd(colors),
-		stroke=9,
-		speed=1
-	})
 end
 
 function gen_day_line()
@@ -94,6 +101,7 @@ end
 
 
 function u_game()
+	g.cur_t=t()-g.start_t
 	-- move day lines
 	for k,day_line in ipairs(g.day_lines) do
 		-- day_line.x-=

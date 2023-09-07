@@ -2,6 +2,8 @@
 
 A tiny game by TeamGantt Engineering
 
+![gantt runner](gantt-runner.gif)
+
 ## Developing
 
 1. Clone the repo (recommend cloning to your `Application Support/pico-8/carts/*` directory)
