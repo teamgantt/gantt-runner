@@ -22,6 +22,7 @@ function i_game()
 			player.milestones=0
 			g.scene="game"
 			g.status="running"
+			g.start_t=t()
 			player.x=40
 			player.y=60
 		end,
