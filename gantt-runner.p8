@@ -26,6 +26,7 @@ function _init()
 	i_player()
 	i_select()
 	i_particles()
+	i_summary()
 end
 
 function _update()
@@ -40,8 +41,8 @@ function _update()
 		u_camera_follow()
 		u_game()
 		u_milestones()
-		u_fx()
 	end
+	u_fx()
 end
 
 function _draw()
@@ -56,12 +57,13 @@ function _draw()
 		d_select();
 	elseif g.scene == 'summary' then
 		d_summary()
+		d_fx()
 	else --game
 		cls(7)
 		d_game()
 		d_map()
-		d_fx()
 		d_milestones()
+		d_fx()
 		d_player()
 		d_debug_hitboxes()
 		d_ui();

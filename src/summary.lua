@@ -1,3 +1,7 @@
+function i_summary()
+  confetti_t=90
+end
+
 
 function u_summary()
   if btnp(❎) then
@@ -10,6 +14,12 @@ function u_summary()
   else
     run_anim.f+=run_anim.timing
 	end
+
+  if confetti_t>0 and g.status=='win' then
+    delay_time(120+rnd(128), sparks(cam.x+rnd(128), cam.y+rnd(64), 5))
+  end
+
+  confetti_t-=1
 end
 
 
@@ -28,6 +38,7 @@ function d_summary()
     cls(2)
     print('you fell', cam.x+44, cam.y+72, 9)
   end
+
   rect(cam.x+22, cam.y+12, cam.x+104, cam.y+65, 7)
   line(cam.x+22, cam.y+32, cam.x+104, cam.y+32, 7)
 

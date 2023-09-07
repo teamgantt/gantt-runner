@@ -41,11 +41,12 @@ end
 function milestone_collide()
 	-- check for collision with milestone
 	for k,mile in ipairs(milestones) do
-		if (check_collision(player.x, player.y, 16, 16, mile.x, mile.y, 8, 8)) then
+		if (check_collision(player.x, player.y, player.w, player.h, mile.x, mile.y, 8, 8)) then
 			prev_milestone_x = mile.x
 			del(milestones, mile)
 			player.milestones+=1
 			sfx(2)
+			sparks(mile.x, mile.y, 4)
 		end
 	end
 end
@@ -54,7 +55,7 @@ end
 -- Returns true if two boxes overlap, false if they don't;
 -- x1,y1 are the top-left coords of the first box, while w1,h1 are its width and height;
 -- x2,y2,w2 & h2 are the same, but for the second box.
-function check_collision(x1,y1,w1,h1, x2,y2,w2,h2)
+function check_collision(x1,y1,w1,h1,x2,y2,w2,h2)
   return x1 < x2+w2 and
          x2 < x1+w1 and
          y1 < y2+h2 and

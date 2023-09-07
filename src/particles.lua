@@ -74,19 +74,37 @@ end
 
 -- poof effect
 function dust(x,y,r,l,c_table,num)
-for i=0, num do
-    --settings
-    add_fx(
-        x,         -- x
-        y,         -- y
-        l+rnd(3), -- die
-        rnd(2)-1,  -- dx
-        rnd(2)-3,  -- dy
-        true,      -- gravity
-        false,     -- grow
-        true,      -- shrink
-        r,         -- radius
-        c_table    -- color_table
-    )
+  for i=0, num do
+      --settings
+      add_fx(
+          x,         -- x
+          y,         -- y
+          l+rnd(3), -- die
+          rnd(2)-1,  -- dx
+          rnd(2)-3,  -- dy
+          true,      -- gravity
+          false,     -- grow
+          true,      -- shrink
+          r,         -- radius
+          c_table    -- color_table
+      )
+  end
 end
+
+function sparks(x,y,num)
+  for i=0, num do
+      --settings
+      add_fx(
+          x+4,         -- x
+          y+4,         -- y
+          4+rnd(6), -- die
+          rnd(4)-2,  -- dx
+          rnd(4)-4,  -- dy
+          true,      -- gravity
+          false,     -- grow
+          true,      -- shrink
+          2,         -- radius
+          {8,9,10,15}    -- color_table
+      )
+  end
 end
