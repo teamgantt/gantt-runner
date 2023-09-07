@@ -16,14 +16,10 @@ function i_game()
 
 		-- methods
 		start_level=function()
-			extcmd('rec')
-
 			if (g.status!="running") then
 				setup_milestones()
 			end
-
 			player.milestones=0
-			confetti_t=60
 			g.scene="game"
 			g.status="running"
 			g.start_t=t()
@@ -41,8 +37,6 @@ function i_game()
 			end
 			g.end_t = g.cur_t
 			g.scene="summary"
-			extcmd("set_filename", "latest_ganttrunner_run.gif")
-			extcmd("video")
 		end,
 	 }
 
