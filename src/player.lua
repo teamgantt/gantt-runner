@@ -212,7 +212,7 @@ function u_player()
 
 	-- player falls, reset
 	if (player.y > 128) then
-		g.end_level('death')
+		g.end_level('lose')
 	end
 
 	--check for finish
