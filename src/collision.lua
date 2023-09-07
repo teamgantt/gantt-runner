@@ -38,13 +38,6 @@ function collide_map(obj,dir,flag)
 
 end
 
-function plat_collide(p)
-	if (p.dy < 0) then --moving upwards
-		return false
-	end
-end
-
-
 function milestone_collide()
 	-- check for collision with milestone
 	for k,mile in ipairs(milestones) do

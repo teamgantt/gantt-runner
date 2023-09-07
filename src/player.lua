@@ -24,7 +24,7 @@ function i_player()
 		h=16,
 		w=12,
 		x=40,
-		y=30,
+		y=60,
 		coyote_time=0,
 		feet_x=8,
 		feet_y=0,
@@ -35,18 +35,28 @@ function i_player()
 		move='idle', -- idle, run, sprint, duck
 
 		-- functions
-		jump=function()
-			if player.move== 'duck' then
-				player.dy=-player.boost*1.25
-				sfx(player.sfx_jump2)
-			else
-				player.dy=-player.boost
-				sfx(player.sfx_jump)
-				player.on_platform=false
+		handle_coyote_time=function(self)
+			if (self.on_platform == true) then
+				self.coyote_time=8 --reset
 			end
 
-			player.coyote_time=0
-			dust(player.feet_x-4,player.feet_y,2,5,{5,6,7},4)
+			if (self.falling == true and self.coyote_time > 0) then
+				self.coyote_time=self.coyote_time-1
+			end
+		end,
+
+		jump=function(self)
+			if self.move == 'duck' and self.on_platform == true then
+				self.dy=-self.boost*1.25
+				sfx(self.sfx_jump2)
+			else
+				self.dy=-self.boost
+				sfx(self.sfx_jump)
+			end
+
+			self.on_platform=false
+			self.coyote_time=0
+			dust(self.feet_x-4,self.feet_y,2,5,{5,6,7},4)
 		end,
 
 		-- sfx
@@ -121,12 +131,12 @@ function u_player()
 
 	--jumping
 	if btnp(❎) and (player.on_platform == true or player.coyote_time > 0) then --jump
-		player.jump()
+		player:jump()
 	end
 
 	--player hit jump button before landing in grace zone
 	if player.on_platform and player.will_jump then
-		player.jump()
+		player:jump()
 		player.will_jump=false
 	end
 
@@ -146,16 +156,6 @@ function u_player()
 	--apply dx and dy to player position
 	player.x+=player.dx
 	player.y+=player.dy
-
-	--coyote time
-	if (player.on_platform) then
-		player.coyote_time=8 --reset
-	elseif (player.dy > 0 and player.coyote_time > 0) then
-		player.coyote_time-=1
-	elseif (player.dy < 0) then
-		player.coyote_time=0 --remove during jump
-	end
-
 
  --animate player run
   if run_anim.f >= count(player[g.character].run_frames) then
@@ -184,28 +184,42 @@ function u_player()
 	if btn(❎) then
 		player.dy+=gravity
 	else
+		sfx(player.sfx_jump, -2)
 		player.dy+=fall_gravity
 	end
 
+
+	--coyote time
+	player:handle_coyote_time()
+
 	--check for collision with platform
 	if (player.dy > 0 and collide_map(player,"down",0)) then
+		if (not player.on_platform) then
+			dust(player.feet_x,player.feet_y+6,2,5,{5,6,7},4)
+		end
 		player.on_platform=true
 		player.falling=false
 		player.dy=0
-		player.coyote_time=8
-		player.y-=((player.y+player.h+1)%8)-1
+		player.y-=((player.y+player.h+1)%8)-1 --reposition player to be on platform
+	elseif (player.dy > 0 and not collide_map(player,"down",0)) then
+		player.on_platform=false
+		player.falling=true
 	end
-
 
 	--update feet pos
 	player.feet_y=player.y+player.h
 	player.feet_x=player.x+player.w/2
 
 	-- player falls, reset
-	if (player.y > 256) then
-		extcmd("reset")
+	if (player.y > 128) then
+		g.end_level('death')
 	end
 
+	--check for finish
+	if (collide_map(player, "down", 2)) then
+		--TODO: add finish particles and timer to next scene
+		g.end_level('win')
+	end
 end
 
 function d_player()
@@ -221,7 +235,7 @@ function d_player()
 
 	end
 
-	--offset for player sprite
+	--offset for player sprite/hitbox
 	local x_offset= 0
 	if (player.dx < 0) then
 		x_offset=player.x-2
