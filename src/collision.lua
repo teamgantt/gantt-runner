@@ -1,10 +1,11 @@
 
-function collide_map(obj,dir,flag)
-	 local x=obj.x  local y=obj.y
-	 local w=obj.w  local h=obj.h
+function collide_map(p,dir,flag)
+	 local collision_offset=g.levels[g.level].offset_y
+	 local x=p.x  local y=p.y+collision_offset
+	 local w=p.w  local h=p.h
 
-	 local x1=0	 local y1=0
-	 local x2=0  local y2=0
+	 local x1=0	 local y1=0+collision_offset
+	 local x2=0  local y2=0+collision_offset
 
 	 if dir=="left" then
 		 x1=x-1  y1=y
@@ -38,12 +39,12 @@ function collide_map(obj,dir,flag)
 
 end
 
-function milestone_collide()
+function milestone_collide(level)
 	-- check for collision with milestone
-	for k,mile in ipairs(milestones) do
+	for k,mile in ipairs(level.milestones) do
 		if (check_collision(player.x, player.y, 16, 16, mile.x, mile.y, 8, 8)) then
 			prev_milestone_x = mile.x
-			del(milestones, mile)
+			del(level.milestones, mile)
 			player.milestones+=1
 			sfx(2)
 		end
