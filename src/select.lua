@@ -3,7 +3,7 @@ function i_select()
   selected_index=1
   max_choice=2
   select_box_character={
-    x=28,
+    x=30,
     y=60,
     w=18,
     h=18
@@ -45,7 +45,7 @@ function u_select()
 
   -- set selection box based on index
   if (select_type == 'character') then
-    select_box_character.x = 38 + (selected_index-1)*24
+    select_box_character.x = 40 + (selected_index-1)*26
   elseif (select_type == 'level') then
     select_box_lvl.x = 30 + (selected_index-1)*24
   end
@@ -75,22 +75,30 @@ end
 
 function d_select()
 
-  -- draw selection box
+  -- draw divider line
+  line(cam.x+0, 48, cam.x+128, 48, 7)
 
+  -- draw selection box
   if (select_type == 'character') then
     print('select character', cam.x+32, 40, 7)
     rect(select_box_character.x, select_box_character.y, select_box_character.x+select_box_character.w, select_box_character.y+select_box_character.h, 7)
 
-    if (g.character == 'john') then
-      spr(player.john.run_frames[flr(run_anim.f)], 40, 60, 2, 2, player.flip_x)
+    if selected_index == 1 then
+      print('lIL jOHN', cam.x+48, 86, 7)
     else
-      spr(player.john.run_frames[1], 40, 60, 2, 2, player.flip_x)
+      print('bARREL nATHAN', cam.x+38, 86, 7)
+    end
+
+    if (g.character == 'john') then
+      spr(player.john.run_frames[flr(run_anim.f)], 42, 60, 2, 2, player.flip_x)
+    else
+      spr(player.john.run_frames[1], 42, 60, 2, 2, player.flip_x)
     end
 
     if (g.character == 'nathan') then
-      spr(player.nathan.run_frames[flr(run_anim.f)], 64, 60, 2, 2, player.flip_x)
+      spr(player.nathan.run_frames[flr(run_anim.f)], 68, 60, 2, 2, player.flip_x)
     else
-      spr(player.nathan.run_frames[1], 64, 60, 2, 2, player.flip_x)
+      spr(player.nathan.run_frames[1], 68, 60, 2, 2, player.flip_x)
     end
   -- level selection box and images
   elseif (select_type == 'level') then
@@ -106,6 +114,7 @@ function d_select()
     spr(108,lvl_spr.x+48, lvl_spr.y, 2, 2)
   end
 
-	print('❎ to confirm', cam.x+36, cam.y+120, 7)
+  print('press ⬅️ or ➡️ to change', cam.x+16, cam.y+110, 7)
+	print('❎ to confirm', cam.x+38, cam.y+120, 7)
 
 end

@@ -2,7 +2,7 @@ function i_player()
 	gravity=0.5
 	fall_gravity=1.3
 	friction=.75
-	jump_grace_frames=4
+	jump_grace_frames=3
 
 	run_anim={
 		f=1,
