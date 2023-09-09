@@ -2,6 +2,8 @@ function i_player()
 	gravity=0.5
 	fall_gravity=1.3
 	friction=.75
+	jump_grace_frames=4
+
 	run_anim={
 		f=1,
 		timing=.4
@@ -9,6 +11,7 @@ function i_player()
 	player={
 		-- player stats
 		milestones=0,
+		jumps=0,
 
 		-- player physics
 		boost=6,
@@ -20,6 +23,7 @@ function i_player()
 
 		-- player state
 		tile=0,
+		jump_intent_t=0, -- 8 frames of allowance to accept a new jump
 		flip_x=false,
 		h=16,
 		w=12,
@@ -53,9 +57,9 @@ function i_player()
 				self.dy=-self.boost
 				sfx(self.sfx_jump)
 			end
-
 			self.on_platform=false
 			self.coyote_time=0
+			self.jumps+=1
 			dust(self.feet_x-4,self.feet_y,2,5,{5,6,7},4)
 		end,
 
@@ -103,6 +107,10 @@ function u_player()
 	player.move='idle'
 	player.dx*=friction
 
+	if (player.jump_intent_t > 0) then
+		player.jump_intent_t-=1
+	end
+
 	--controls
 	if (btn(⬅️)) then
 		player.dx-=player.acc
@@ -129,15 +137,15 @@ function u_player()
 		friction=.75 --reset friction
 	end
 
+	--record jump intent via timer
+	if btnp(❎) and player.dy>0 and player.jump_intent_t == 0 then
+		--restart jump intent timer, if timeleft when they hit the ground, they jump
+		player.jump_intent_t=jump_grace_frames
+	end
+
 	--jumping
 	if btnp(❎) and (player.on_platform == true or player.coyote_time > 0) then --jump
 		player:jump()
-	end
-
-	--player hit jump button before landing in grace zone
-	if player.on_platform and player.will_jump then
-		player:jump()
-		player.will_jump=false
 	end
 
 	--sprinting
@@ -194,9 +202,18 @@ function u_player()
 
 	--check for collision with platform
 	if (player.dy > 0 and collide_map(player,"down",0)) then
+		--player hit jump button before landing while close to platform
+		if player.jump_intent_t > 0 and not collide_map(player, "down", 2) then
+			player:jump()
+			player.jump_intent_t=0
+			return
+		end
+
 		if (not player.on_platform) then
 			dust(player.feet_x,player.feet_y+6,2,5,{5,6,7},4)
 		end
+
+
 		player.on_platform=true
 		player.falling=false
 		player.dy=0
@@ -211,7 +228,7 @@ function u_player()
 	player.feet_x=player.x+player.w/2
 
 	-- player falls, reset
-	if (player.y > 128) then
+	if (player.y > cam.y+128) then
 		g.end_level('lose')
 	end
 
@@ -226,7 +243,7 @@ function d_player()
 	if debug then
 		print("coyote_time: "..player.coyote_time, player.x, player.y-6, 1)
 		print('status:'..player.move, player.x, player.y-12, 1)
-		print("will jump:"..tostr(player.will_jump), player.x, player.y-18, 1)
+		print("intent_timer:"..tostr(player.jump_intent_t), player.x, player.y-18, 1)
 		print("x:"..flr(player.x), player.x, player.y-30, 1)
 		print("y:"..flr(player.y), player.x, player.y-36, 1)
 		print("dy:"..tostr(player.dy),cam.x, cam.y+10,11)

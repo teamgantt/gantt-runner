@@ -1,35 +1,70 @@
 function i_select()
-  g.character = 'john'
-  select_box1 = {
-    x = 38,
-    y = 60,
-    w = 16,
-    h = 16
+  select_type='character' -- character, level
+  selected_index=1
+  max_choice=2
+  select_box_character={
+    x=28,
+    y=60,
+    w=18,
+    h=18
   }
-  select_box2 = {
-    x = 64,
-    y = 60,
-    w = 16,
-    h = 16
+  select_box_lvl={
+    x=32,
+    y=60,
+    w=19,
+    h=19
   }
 end
 
 
 function u_select()
-  if (btnp(➡️)) then
-    g.character = 'nathan'
-    sfx(5)
+  -- change selected index left
+  if (btnp(⬅️)) then
+    if selected_index > 1 then
+      selected_index-=1
+      sfx(5)
+    end
   end
 
-	if (btnp(⬅️)) then
-    g.character = 'john'
-    sfx(5)
+  -- change selected index right
+  if (btnp(➡️)) then
+    if selected_index < max_choice then
+      selected_index+=1
+      sfx(5)
+    end
+  end
+
+  -- set character
+  if (select_type == 'character') then
+    if (selected_index == 1) then
+      g.character = 'john'
+    else
+      g.character = 'nathan'
+    end
+  end
+
+  -- set selection box based on index
+  if (select_type == 'character') then
+    select_box_character.x = 38 + (selected_index-1)*24
+  elseif (select_type == 'level') then
+    select_box_lvl.x = 30 + (selected_index-1)*24
   end
 
   if (btnp(❎)) then
-    g.start_level()
+    if (select_type == 'character') then
+      select_type = 'level'
+      selected_index = 1
+      max_choice = 3
+      select_box_character.x = 28 -- reset
+      select_box_lvl.x = 38 -- reset
+      sfx(4)
+    elseif (select_type == 'level') then
+      g.start_level(selected_index)
+      max_choice = 2
+    end
     sfx(4)
   end
+
 
   if run_anim.f >= count(player.nathan.run_frames) then
 		run_anim.f = 1
@@ -39,25 +74,38 @@ function u_select()
 end
 
 function d_select()
-	print('select character:', cam.x+28, 40, 7)
-	print('❎ to confirm', cam.x+32, 84, 7)
 
-  if g.character == 'john' then
-    rect(select_box1.x, select_box1.y, select_box1.x+select_box1.w, select_box1.y+select_box1.h, 7)
-  else
-    rect(select_box2.x, select_box2.y, select_box2.x+select_box2.w, select_box2.y+select_box2.h, 7)
+  -- draw selection box
+
+  if (select_type == 'character') then
+    print('select character', cam.x+32, 40, 7)
+    rect(select_box_character.x, select_box_character.y, select_box_character.x+select_box_character.w, select_box_character.y+select_box_character.h, 7)
+
+    if (g.character == 'john') then
+      spr(player.john.run_frames[flr(run_anim.f)], 40, 60, 2, 2, player.flip_x)
+    else
+      spr(player.john.run_frames[1], 40, 60, 2, 2, player.flip_x)
+    end
+
+    if (g.character == 'nathan') then
+      spr(player.nathan.run_frames[flr(run_anim.f)], 64, 60, 2, 2, player.flip_x)
+    else
+      spr(player.nathan.run_frames[1], 64, 60, 2, 2, player.flip_x)
+    end
+  -- level selection box and images
+  elseif (select_type == 'level') then
+    rect(select_box_lvl.x, select_box_lvl.y, select_box_lvl.x+select_box_lvl.w, select_box_lvl.y+select_box_lvl.h, 7)
+    print('select level '..selected_index, cam.x+36, 40, 7)
+
+    local lvl_spr = {
+      x=32,
+      y=62,
+    }
+    spr(76, lvl_spr.x, lvl_spr.y, 2, 2)
+    spr(78, lvl_spr.x+24, lvl_spr.y, 2, 2)
+    spr(108,lvl_spr.x+48, lvl_spr.y, 2, 2)
   end
 
-  if (g.character == 'john') then
-    spr(player.john.run_frames[flr(run_anim.f)], 40, 60, 2, 2, player.flip_x)
-  else
-    spr(player.john.run_frames[1], 40, 60, 2, 2, player.flip_x)
-  end
-
-  if (g.character == 'nathan') then
-    spr(player.nathan.run_frames[flr(run_anim.f)], 64, 60, 2, 2, player.flip_x)
-  else
-    spr(player.nathan.run_frames[1], 64, 60, 2, 2, player.flip_x)
-  end
+	print('❎ to confirm', cam.x+36, cam.y+120, 7)
 
 end
