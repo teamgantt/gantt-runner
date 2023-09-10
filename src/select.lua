@@ -103,7 +103,7 @@ function d_select()
   -- level selection box and images
   elseif (select_type == 'level') then
     rect(select_box_lvl.x, select_box_lvl.y, select_box_lvl.x+select_box_lvl.w, select_box_lvl.y+select_box_lvl.h, 7)
-    print('select level '..selected_index, cam.x+36, 40, 7)
+    print('select project '..selected_index, cam.x+36, 40, 7)
 
     local lvl_spr = {
       x=32,

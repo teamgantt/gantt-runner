@@ -104,11 +104,11 @@ function d_summary()
 	spr(18, cam.x+44+stat_offx, cam.y+45+stat_offy) --milestones
   print(player.milestones..'/'..g.total_milestones, cam.x+56+stat_offx, cam.y+47+stat_offy, 7)
 
-  spr(16, cam.x+44+stat_offx, cam.y+55+stat_offy) --score
-  print(calculate_score()..' pts', cam.x+56+stat_offx, cam.y+57+stat_offy, 7)
+  spr(102, cam.x+44+stat_offx, cam.y+55+stat_offy) --jumps
+  print(player.jumps..' jumps', cam.x+56+stat_offx, cam.y+57+stat_offy, 7)
 
-  spr(102, cam.x+44+stat_offx, cam.y+65+stat_offy) --jumps
-  print(player.jumps..' jumps', cam.x+56+stat_offx, cam.y+67+stat_offy, 7)
+  spr(16, cam.x+44+stat_offx, cam.y+65+stat_offy) --score
+  print(calculate_score()..' pts', cam.x+56+stat_offx, cam.y+67+stat_offy, 7)
 
   -- player backing rect
   rectfill(cam.x+42, cam.y+42, cam.x+24, cam.y+81, 7)
@@ -117,7 +117,7 @@ function d_summary()
   --delay instructions
   if (delay_instructions == 0) then
     print('❎ to retry level', cam.x+28, cam.y+100, 7)
-    print('🅾️ to reset game', cam.x+28, cam.y+108, 6)
+    print('🅾️ to quit', cam.x+28, cam.y+108, 6)
   end
 end
 
