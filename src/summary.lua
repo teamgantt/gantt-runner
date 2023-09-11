@@ -85,7 +85,7 @@ function d_summary()
     print('nice job!', cam.x+44, cam.y+90, 8)
   elseif (g.status=='lose') then
     rectfill(cam.x, cam.y, cam.x+127, cam.y+127, 2)
-    print('you fell', cam.x+48, cam.y+92, 9)
+    print('you fell', cam.x+48, cam.y+90, 9)
   end
   fillp(0)
   rect(cam.x+22, cam.y+12, cam.x+104, cam.y+83, 7)
@@ -116,8 +116,8 @@ function d_summary()
 
   --delay instructions
   if (delay_instructions == 0) then
-    print('❎ to retry level', cam.x+28, cam.y+100, 7)
-    print('🅾️ to quit', cam.x+28, cam.y+108, 6)
+    print('❎ to retry level', cam.x+28, cam.y+102, 7)
+    print('🅾️ to quit', cam.x+42, cam.y+110, 6)
   end
 end
 

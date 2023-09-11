@@ -1,9 +1,12 @@
 function d_ui()
-	spr(42, cam.x+110, cam.y+2, 2, 2) --tg logo
-	spr(18, cam.x+2, cam.y+2) --milestone
-	print(player.milestones .."/"..g.total_milestones, cam.x+12, cam.y+4, 0)
-	spr(46, cam.x+2, cam.y+12) --stopwatch
-	print(g.cur_t, cam.x+12, cam.y+14, 0)
+	local y_offset = 116
+	spr(248, cam.x+119, cam.y+119, 1, 1) --tg logo
+
+	spr(18, cam.x+2, cam.y+2+y_offset) --milestone
+	print(player.milestones .."/"..g.total_milestones, cam.x+12, cam.y+4+y_offset, 0)
+
+	spr(46, cam.x+36, cam.y+2+y_offset) --stopwatch
+	print(g.cur_t, cam.x+46, cam.y+4+y_offset, 0)
 end
 
 

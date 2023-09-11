@@ -60,20 +60,20 @@ end
 
 function d_menu()
 	spr(192,28,10,8,4)
-	spr(200,28,42,8,4)
+	spr(200,28,42,8,3)
 
 	spr(get_nathan_frames(menu_nathan.is_rolling), menu_nathan.x, menu_nathan.y, 2, 2, menu_nathan.flip_x)
 	spr(menu_john.run_frames[flr(run_anim.f)], menu_john.x, menu_john.y, 2, 2, menu_john.flip_x)
 
 
+  print('❎ to begin', cam.x+40, 68, 7)
 
 	-- draw task bar
 	rectfill(cam.x-1, cam.y+100, cam.x+129, cam.y+108, 10)
 	rect(cam.x-1, cam.y+100, cam.x+129, cam.y+108, 9)
 
-	spr(42, cam.x+30, cam.y+110, 2, 2) --tg logo
-  print('❎ to begin', cam.x+40, 68, 7)
-	print('teamgantt', cam.x+48, 116, 7)
+	spr(248, cam.x+8, cam.y+114, 1, 1) --tg logo
+	print('copyright 2023 teamgantt', cam.x+19, 116, 6)
 end
 
 function get_nathan_frames(is_rolling)
