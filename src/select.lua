@@ -84,7 +84,7 @@ function d_select()
 
   -- draw selection box
   if (select_type == 'character') then
-    print('select character', cam.x+32, 0, 7)
+    print('select character', cam.x+32, 1, 7)
     rect(select_box_character.x, select_box_character.y+char_offset_y, select_box_character.x+select_box_character.w+char_offset_x, select_box_character.y+select_box_character.h+char_offset_y, 7)
 
     if selected_index == 1 then
@@ -130,7 +130,7 @@ function d_select()
   -- level selection box and images
   elseif (select_type == 'level') then
     rect(select_box_lvl.x, select_box_lvl.y, select_box_lvl.x+select_box_lvl.w, select_box_lvl.y+select_box_lvl.h, 7)
-    print('select project '..selected_index, cam.x+32, 0, 7)
+    print('select project '..selected_index, cam.x+32, 1, 7)
 
     local lvl_spr = {
       x=32,
