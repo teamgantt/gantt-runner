@@ -1,8 +1,10 @@
 function i_menu()
 	interval= rnd_between(40,80)
 	menu_f=2
+	def_j_dx=1.2
+	def_n_dx=1.2
 	menu_john = {
-		dx = 2,
+		dx = def_j_dx,
 		x = 42,
 		y = 84,
 		w = 16,
@@ -11,7 +13,7 @@ function i_menu()
 		run_frames={34,36,34}
 	}
 	menu_nathan = {
-		dx = 1.6,
+		dx = def_n_dx,
 		x = 64,
 		y = 84,
 		w = 16,
@@ -39,7 +41,7 @@ function u_menu()
   if run_anim.f >= count(player.nathan.run_frames) then
 		run_anim.f = 1
   else
-    run_anim.f+=run_anim.timing+.1
+    run_anim.f+=run_anim.timing+.10
 	end
 
 	menu_john.x += menu_john.dx
@@ -79,7 +81,15 @@ end
 function get_nathan_frames(is_rolling)
 	-- at random intervals, nathan will roll for 8 frames
 	if (is_rolling) then
+		menu_nathan.dx*=1.01
 		return menu_nathan.roll_frames[flr(run_anim.f)]
+	end
+
+	-- if not rolling set back to default speed
+	if (menu_nathan.dx > 0) then
+		menu_nathan.dx = def_n_dx
+	else
+		menu_nathan.dx = -def_n_dx
 	end
 
 	return menu_nathan.run_frames[flr(run_anim.f)]

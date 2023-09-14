@@ -41,7 +41,7 @@ function _init()
 	i_summary()
 end
 
-function _update()
+function _update60()
 	if (g.scene == 'menu') then
 		u_menu()
 	elseif (g.scene == 'select') then

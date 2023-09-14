@@ -1,12 +1,12 @@
 function i_player()
-	gravity=0.5
-	fall_gravity=1.3
+	gravity=0.25
+	fall_gravity=.65
 	jump_grace_frames=3
 	current_friction=0.75
 
 	run_anim={
 		f=1,
-		timing=.4
+		timing=.2
 	}
 	player={
 		-- player stats
@@ -15,11 +15,10 @@ function i_player()
 		jumps=0,
 
 		-- player physics
-		boost=5,
-		acc=0.5,
+		acc=0.25,
 		dx=0,
 		dy=0,
-		max_dy=4,
+		max_dy=2.5,
 
 		-- player state
 		tile=0,
@@ -42,7 +41,7 @@ function i_player()
 		-- functions
 		handle_coyote_time=function(self)
 			if (self.on_platform == true) then
-				self.coyote_time=4 --reset
+				self.coyote_time=self[g.character].coyote_reset --reset
 			end
 
 			if (self.falling == true and self.coyote_time > 0) then
@@ -52,10 +51,10 @@ function i_player()
 
 		jump=function(self)
 			if self.move == 'duck' and self.on_platform == true then
-				self.dy=-self.boost*1.25
+				self.dy=-self[g.character].boost*1.25
 				sfx(self.sfx_jump2)
 			else
-				self.dy=-self.boost
+				self.dy=-self[g.character].boost
 				sfx(self.sfx_jump)
 			end
 			self.on_platform=false
@@ -70,10 +69,10 @@ function i_player()
 		sfx_land=1,
 		sfx_step=3,
 
-		-- sprites
-		--player anims
+		-- character props
 		john={
-			max_dx=4,
+			max_dx=2.45, --w sprint
+			boost=4,
 			can_double=true,
 			run_friction=.75,
 			mod_friction=1.10,
@@ -82,6 +81,7 @@ function i_player()
 			falling_s=38,
 			jumping_s=40,
 			duck_s=10,
+			coyote_reset=4,
 			run_frames={34,36,34},
 			sprint_frames={34,36,34},
 			stats={
@@ -91,15 +91,17 @@ function i_player()
 			}
 		},
 		nathan={
-			max_dx=5,
+			max_dx=2.75, --w sprint
+			boost=4.25,
 			can_double=false,
-			run_friction=.75,
+			run_friction=0.75,
 			mod_friction=1.25,
 			cur_s=64,
 			idle_s=64,
 			falling_s=72,
 			jumping_s=70,
 			duck_s=74,
+			coyote_reset=20,
 			run_frames={66,68,66},
 			sprint_frames={96,98,100},
 			stats={
@@ -162,31 +164,28 @@ function u_player()
 		player.coyote_time > 0
 	) then --jump
 		player:jump()
-	elseif (btnp(❎) and (player[g.character].can_double == true and player.has_double == true)) then
-		player:jump()
-		player.has_double=false
-	end
-
-	-- apply less friction if sprinting and holding a direction
-	if (btn(🅾️) and ((player.dx<0 and btn(⬅️))  or (player.dx>0 and btn(➡️)))) then
-		current_friction=player[g.character].run_friction*player[g.character].mod_friction
-	else
-		current_friction=player[g.character].run_friction --reset friction
+	elseif (
+		btnp(❎) and
+		player.falling and --
+		(player[g.character].can_double == true and player.has_double == true)) then
+			player:jump()
+			player.has_double=false
 	end
 
 	--sprinting
-	if player.dx > 3.5 or player.dx < -3.5 then
+	-- apply less friction if sprinting and holding a direction
+	if (btn(🅾️) and ((player.dx<0 and btn(⬅️))  or (player.dx>0 and btn(➡️)))) then
+		current_friction=player[g.character].run_friction*player[g.character].mod_friction
 		player.move='sprint'
-	elseif (abs(player.dx) > 0.2) then
-		player.move='run'
+		player.dx = limit_speed(player.dx,player[g.character].max_dx)
+	else
+		current_friction=player[g.character].run_friction --reset friction
+		player.dx = limit_speed(player.dx,player[g.character].max_dx-0.5) -- lower max speed if not sprinting
 	end
-
-	--limit left/right speed
-	player.dx=mid(-player[g.character].max_dx,player.dx,player[g.character].max_dx)
 
 	--limit fall speed
 	if (player.dy>0) then
-		player.dy=mid(-player.max_dy,player.dy,player.max_dy)
+		player.dy=limit_speed(player.dy,player.max_dy)
 	end
 
 	--apply dx and dy to player position
@@ -200,7 +199,7 @@ function u_player()
 
 	--handle player sfx
 	if (player.on_platform and player.move =='run') then
-		run_sfx.step(.2)
+		run_sfx.step(.1)
 	end
 
 	--running animations
@@ -210,7 +209,7 @@ function u_player()
 
 		if player.move == 'sprint' then
 			dust(player.feet_x,player.feet_y,2,1,{5,6,7},4)
-			run_sfx.step(.3)
+			run_sfx.step(.15)
 		end
 	else
 		run_anim.f=1
@@ -261,7 +260,7 @@ function u_player()
 		g.end_level('lose')
 	end
 
-	--check for finish
+	--check for finish (flag2)
 	if (collide_map(player, "down", 2)) then
 		--TODO: add finish particles and timer to next scene
 		g.end_level('win')
@@ -305,4 +304,8 @@ function d_player()
 	else --idle
 		spr(flr(player[g.character].idle_s), x_offset, player.y, 2, 2, player.flip_x)
 	end
+end
+
+function limit_speed(num,maximum)
+  return mid(-maximum,num,maximum)
 end
