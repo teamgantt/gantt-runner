@@ -45,7 +45,7 @@ function milestone_collide(level)
 		if (check_collision(player.x, player.y, 16, 16, mile.x, mile.y, 8, 8)) then
 			prev_milestone_x = mile.x
 			del(level.milestones, mile)
-			add(level.milestone_pts, {x=mile.x, y=mile.y, f=0})
+			add(level.milestone_pts, {x=mile.x, y=mile.y-8, f=0})
 			player.milestones+=1
 			sfx(2)
 		end

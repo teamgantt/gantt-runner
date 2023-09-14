@@ -17,9 +17,12 @@ __lua__
 #include src/menu.lua
 #include src/select.lua
 #include src/summary.lua
+#include src/stats.lua
 
 function _init()
 	debug=false
+	local fetched_data = cartdata('super_gantt_runner')
+
 	class = { init = function()end; extend = function(self, proto) local meta = {}
     local proto = setmetatable(proto or {},{__index=self, __call=function(_,...) local o=setmetatable({},meta) return o,o:init(...) end})
     meta.__index = proto ; for k,v in pairs(proto.__ or {}) do meta['__'..k]=v end ; return proto end }
@@ -30,6 +33,7 @@ function _init()
 			printh(str, "log", false)
 		end
 	end
+	i_stats()
 	i_menu()
 	i_camera_follow()
 	i_milestones()
@@ -39,15 +43,24 @@ function _init()
 	i_select()
 	i_particles()
 	i_summary()
+
+
 end
 
 function _update60()
 	if (g.scene == 'menu') then
 		u_menu()
+		menuitem(4, "view game stats",
+			function()
+				g.scene='stats'
+			end
+		)
 	elseif (g.scene == 'select') then
 		u_select()
 	elseif (g.scene == 'summary') then
 		u_summary()
+	elseif (g.scene == 'stats') then
+		u_stats()
 	else
 		u_player()
 		u_camera_follow()
@@ -67,6 +80,8 @@ function _draw()
 		d_select();
 	elseif g.scene == 'summary' then
 		d_summary()
+	elseif (g.scene == 'stats') then
+		d_stats()
 	else --game
 		d_game()
 		d_fx()
