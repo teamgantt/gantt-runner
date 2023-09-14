@@ -92,11 +92,10 @@ function d_summary()
   line(cam.x+22, cam.y+32, cam.x+104, cam.y+32, 7)
   line(cam.x+22, cam.y+40, cam.x+104, cam.y+40, 7)
 
-	spr(248, cam.x+27, 19, 2, 2) --tg logo
-	print('gANTT rUNNER', cam.x+40, cam.y+18, 7)
-	print('RUN SUMMARY', cam.x+40, cam.y+24, 7)
+	spr(248, cam.x+29, 19, 2, 2) --tg logo
+	print('run summary', cam.x+44, cam.y+21, 7)
 
-  print('level '..g.level, cam.x+46+stat_offx, cam.y+26+stat_offy, 7)
+  print('project '..g.level, cam.x+42+stat_offx, cam.y+26+stat_offy, 7)
 
   spr(46, cam.x+44+stat_offx, cam.y+35+stat_offy) --time
 	print(g.end_t..' sec', cam.x+56+stat_offx, cam.y+37+stat_offy, 7)
