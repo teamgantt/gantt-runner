@@ -20,6 +20,8 @@ function i_game()
 
 		-- methods
 		start_level=function(level)
+			g.end_t=0
+			g.cur_t=0
 			g.level=level
 			g.levels[level]:setup()
 			g.total_milestones=count(g.levels[level].milestones)
@@ -49,8 +51,8 @@ function i_game()
 				sfx(6)
 			end
 			player.dx=0 -- ensure player stops
-			player.score=g:calculate_score()
 			g.end_t = g.cur_t
+			player.score=g:calculate_score()
 			g.scene="summary"
 		end,
 
