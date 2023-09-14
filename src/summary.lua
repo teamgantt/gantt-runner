@@ -92,9 +92,9 @@ function d_summary()
   line(cam.x+22, cam.y+32, cam.x+104, cam.y+32, 7)
   line(cam.x+22, cam.y+40, cam.x+104, cam.y+40, 7)
 
-	spr(42, cam.x+24, 14, 2, 2) --tg logo
-	print('gANTT rUNNER', cam.x+44, cam.y+18, 7)
-	print('RUN SUMMARY', cam.x+44, cam.y+24, 7)
+	spr(248, cam.x+27, 19, 2, 2) --tg logo
+	print('gANTT rUNNER', cam.x+40, cam.y+18, 7)
+	print('RUN SUMMARY', cam.x+40, cam.y+24, 7)
 
   print('level '..g.level, cam.x+46+stat_offx, cam.y+26+stat_offy, 7)
 
@@ -108,7 +108,7 @@ function d_summary()
   print(player.jumps..' jumps', cam.x+56+stat_offx, cam.y+57+stat_offy, 7)
 
   spr(16, cam.x+44+stat_offx, cam.y+65+stat_offy) --score
-  print(calculate_score()..' pts', cam.x+56+stat_offx, cam.y+67+stat_offy, 7)
+  print(player.score..' pts', cam.x+56+stat_offx, cam.y+67+stat_offy, 7)
 
   -- player backing rect
   rectfill(cam.x+42, cam.y+42, cam.x+24, cam.y+81, 7)
@@ -121,18 +121,4 @@ function d_summary()
   end
 end
 
-function calculate_score()
-  -- local elapsed_time = g.end_t - g.start_t
-  -- local time_taken = elapsed_time - player.milestones
-  -- local score = (player.milestones + 1) / time_taken
-  -- return ceil(score)
-  local i = ceil(player.milestones * (1/g.end_t) * 1000)
-  if (player.milestones > 0 and player.milestones==g.total_milestones) then
-    i+=3000 --milestone bonus
-  end
 
-  if (g.status == 'lose') then
-    i-=500
-  end
-  return i
-end

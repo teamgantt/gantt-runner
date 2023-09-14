@@ -1,8 +1,8 @@
 function i_player()
 	gravity=0.5
 	fall_gravity=1.3
-	friction=.75
 	jump_grace_frames=3
+	current_friction=0.75
 
 	run_anim={
 		f=1,
@@ -10,15 +10,15 @@ function i_player()
 	}
 	player={
 		-- player stats
+		score=0,
 		milestones=0,
 		jumps=0,
 
 		-- player physics
-		boost=6,
+		boost=5,
 		acc=0.5,
 		dx=0,
 		dy=0,
-		max_dx=4,
 		max_dy=4,
 
 		-- player state
@@ -29,6 +29,7 @@ function i_player()
 		w=12,
 		x=40,
 		y=60,
+		has_double=true,
 		coyote_time=0,
 		feet_x=8,
 		feet_y=0,
@@ -41,7 +42,7 @@ function i_player()
 		-- functions
 		handle_coyote_time=function(self)
 			if (self.on_platform == true) then
-				self.coyote_time=8 --reset
+				self.coyote_time=4 --reset
 			end
 
 			if (self.falling == true and self.coyote_time > 0) then
@@ -71,24 +72,42 @@ function i_player()
 
 		-- sprites
 		--player anims
-			john={
-				cur_s=32,
-				idle_s=32,
-				falling_s=38,
-				jumping_s=40,
-				duck_s=10,
-				run_frames={34,36,34},
-				sprint_frames={34,36,34},
-			},
-			nathan={
-				cur_s=64,
-				idle_s=64,
-				falling_s=72,
-				jumping_s=70,
-				duck_s=74,
-				run_frames={66,68,66},
-				sprint_frames={96,98,100}
+		john={
+			max_dx=4,
+			can_double=true,
+			run_friction=.75,
+			mod_friction=1.10,
+			cur_s=32,
+			idle_s=32,
+			falling_s=38,
+			jumping_s=40,
+			duck_s=10,
+			run_frames={34,36,34},
+			sprint_frames={34,36,34},
+			stats={
+				speed=1,
+				jump=3,
+				grip=2,
 			}
+		},
+		nathan={
+			max_dx=5,
+			can_double=false,
+			run_friction=.75,
+			mod_friction=1.25,
+			cur_s=64,
+			idle_s=64,
+			falling_s=72,
+			jumping_s=70,
+			duck_s=74,
+			run_frames={66,68,66},
+			sprint_frames={96,98,100},
+			stats={
+				speed=3,
+				jump=2,
+				grip=1,
+			}
+		}
 
 	}
 	run_sfx={
@@ -105,7 +124,7 @@ end
 
 function u_player()
 	player.move='idle'
-	player.dx*=friction
+	player.dx*=current_friction*player[g.character].mod_friction
 
 	if (player.jump_intent_t > 0) then
 		player.jump_intent_t-=1
@@ -130,12 +149,6 @@ function u_player()
 		player.move='duck'
 	end
 
-	if (btn(🅾️) and (player.move=='run' or player.on_platform==false)) then --speed boost
-		player.dx*=2
-		friction=.5
-	else
-		friction=.75 --reset friction
-	end
 
 	--record jump intent via timer
 	if btnp(❎) and player.dy>0 and player.jump_intent_t == 0 then
@@ -144,17 +157,32 @@ function u_player()
 	end
 
 	--jumping
-	if btnp(❎) and (player.on_platform == true or player.coyote_time > 0) then --jump
+	if btnp(❎) and (
+		player.on_platform == true or
+		player.coyote_time > 0
+	) then --jump
 		player:jump()
+	elseif (btnp(❎) and (player[g.character].can_double == true and player.has_double == true)) then
+		player:jump()
+		player.has_double=false
+	end
+
+	-- apply less friction if sprinting and holding a direction
+	if (btn(🅾️) and ((player.dx<0 and btn(⬅️))  or (player.dx>0 and btn(➡️)))) then
+		current_friction=player[g.character].run_friction*player[g.character].mod_friction
+	else
+		current_friction=player[g.character].run_friction --reset friction
 	end
 
 	--sprinting
 	if player.dx > 3.5 or player.dx < -3.5 then
 		player.move='sprint'
+	elseif (abs(player.dx) > 0.2) then
+		player.move='run'
 	end
 
 	--limit left/right speed
-	player.dx=mid(-player.max_dx,player.dx,player.max_dx)
+	player.dx=mid(-player[g.character].max_dx,player.dx,player[g.character].max_dx)
 
 	--limit fall speed
 	if (player.dy>0) then
@@ -215,6 +243,7 @@ function u_player()
 
 
 		player.on_platform=true
+		player.has_double=true
 		player.falling=false
 		player.dy=0
 		player.y-=((player.y+player.h+1)%8)-1 --reposition player to be on platform
@@ -246,10 +275,11 @@ function d_player()
 		print("intent_timer:"..tostr(player.jump_intent_t), player.x, player.y-18, 1)
 		print("x:"..flr(player.x), player.x, player.y-30, 1)
 		print("y:"..flr(player.y), player.x, player.y-36, 1)
+		print("has_double:"..tostr(player.has_double), player.x, player.y-46, 1)
 		print("dy:"..tostr(player.dy),cam.x, cam.y+10,11)
 		print("dx:"..tostr(player.dx),cam.x, cam.y+16,11)
 		print("falling: "..tostr(player.falling),cam.x, cam.y+22,11)
-
+		print("friction: "..tostr(current_friction),cam.x, cam.y+28,11)
 	end
 
 	--offset for player sprite/hitbox

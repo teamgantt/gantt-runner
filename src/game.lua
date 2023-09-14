@@ -16,7 +16,7 @@ function i_game()
 		day_lines={},
 		days={},
 		line_color=6,
-		character='john',
+		character='nathan',
 
 		-- methods
 		start_level=function(level)
@@ -49,9 +49,34 @@ function i_game()
 				sfx(6)
 			end
 			player.dx=0 -- ensure player stops
+			player.score=g:calculate_score()
 			g.end_t = g.cur_t
 			g.scene="summary"
 		end,
+
+		calculate_score=function(self)
+
+			local i = ceil(player.milestones * (1/g.end_t) * 1000)
+
+			if (player.milestones > 0 and player.milestones==g.total_milestones) then
+				i+=3000 --milestone bonus for getting all milestones
+			end
+
+			-- subtract points per second
+			i-=(self.cur_t*10)
+
+			-- add points per milestone
+			i+=(player.milestones*100)
+
+			-- subtract points per jump
+			i-=(player.jumps*10)
+
+			if (i < 0) then
+				i=0
+			end
+
+			return flr(i)
+		end
 	 }
 
 	 -- day lines
@@ -96,8 +121,4 @@ function d_game()
 	line(cam.x, cam.y+8, cam.x+128, cam.y+8, g.line_color)
 
 	g.levels[g.level]:draw()
-
-	if debug then
-		print("total milestones "..count(g.levels[g.level].milestones), cam.x, cam.y)
-	end
 end
