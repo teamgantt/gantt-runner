@@ -14,6 +14,7 @@ function i_levels()
     offset_y=0; -- collision offset for map
     milestones={};
     milestone_cache={};
+    milestone_pts={};
     color_bg=0;
 
     init = function(self, start_cell_x, start_cell_y, level_w, level_h, player_x, player_y, offset_y, color)
@@ -33,20 +34,22 @@ function i_levels()
       for k,mile in ipairs(self.milestones) do
         mile:animate()
       end
+
+      -- animate milestone pts
+      for k,mile in ipairs(self.milestone_pts) do
+        mile.y -= 1
+        mile.f += 1
+        if (mile.f > 15) then
+          del(self.milestone_pts, mile)
+        end
+      end
+
       -- handle collisions
       milestone_collide(self)
     end;
 
     setup = function(self)
       self:setup_milestones()
-      --   self.start_cell_x, -- start x
-      --   self.start_cell_x+self.level_w, -- end x
-      --   self.start_cell_y, -- start y
-      --   self.start_cell_y+self.level_h, -- end y,
-      --   self.offset_y,
-      --   self.milestone_cache,
-      --   self.milestones
-      -- )
     end;
 
     draw = function(self)
@@ -55,6 +58,11 @@ function i_levels()
       -- draw milestones
       for k,mile in ipairs(self.milestones) do
         spr(mile_frames[flr(mile.f)], mile.x, mile.y)
+      end
+
+      -- draw milestone pts
+      for k,mile in ipairs(self.milestone_pts) do
+        print('100', mile.x, mile.y, 10)
       end
     end;
 
