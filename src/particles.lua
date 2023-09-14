@@ -74,19 +74,19 @@ end
 
 -- poof effect
 function dust(x,y,r,l,c_table,num)
-for i=0, num do
-    --settings
-    add_fx(
-        x,         -- x
-        y,         -- y
-        l+rnd(3), -- die
-        rnd(2)-1,  -- dx
-        rnd(2)-3,  -- dy
-        true,      -- gravity
-        false,     -- grow
-        true,      -- shrink
-        r,         -- radius
-        c_table    -- color_table
-    )
-end
+  for i=0, num do
+      --settings
+      add_fx(
+          x,         -- x
+          y,         -- y
+          l+rnd(4), -- die
+          rnd(2)-1,  -- dx
+          rnd(2)-3,  -- dy
+          true,      -- gravity
+          false,     -- grow
+          true,      -- shrink
+          r,         -- radius
+          c_table    -- color_table
+      )
+  end
 end
