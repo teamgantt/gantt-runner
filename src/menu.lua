@@ -34,7 +34,11 @@ function u_menu()
 
 	if (btnp(❎)) then
 		g.scene = 'select'
+		stats:load_all()
     sfx(2)
+	elseif (btnp(🅾️)) then
+    sfx(1)
+		g.scene = 'stats'
 	end
 
 
@@ -61,14 +65,16 @@ function u_menu()
 end
 
 function d_menu()
-	spr(192,28,10,8,4)
-	spr(200,28,42,8,3)
+	-- draw title logo
+	spr(192,28,6,8,4)
+	spr(200,28,38,8,3)
 
 	spr(get_nathan_frames(menu_nathan.is_rolling), menu_nathan.x, menu_nathan.y, 2, 2, menu_nathan.flip_x)
 	spr(menu_john.run_frames[flr(run_anim.f)], menu_john.x, menu_john.y, 2, 2, menu_john.flip_x)
 
 
-  print('❎ to begin', cam.x+40, 68, 7)
+  print('❎ to start', cam.x+40, 68, 7)
+	print('🅾️ stats', cam.x+44, 76, 6)
 
 	-- draw task bar
 	rectfill(cam.x-1, cam.y+100, cam.x+129, cam.y+108, 10)

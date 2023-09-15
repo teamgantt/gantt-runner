@@ -39,7 +39,7 @@ function i_levels()
       for k,mile in ipairs(self.milestone_pts) do
         mile.y -= 1
         mile.f += 1
-        if (mile.f > 15) then
+        if (mile.f > 10) then
           del(self.milestone_pts, mile)
         end
       end
@@ -86,12 +86,8 @@ function i_levels()
           add(self.milestones, cache[i])
         end
 
-          log("final self.milestones from cache: "..count(self.milestones))
-          log("first milestone from cache: "..self.milestones[1].x..","..self.milestones[1].y)
         return
       end
-
-      log("not using cache. initial self.milestones: "..count(self.milestones))
 
       if (start_x == 0) then
         start_x = start_x+1
@@ -119,7 +115,6 @@ function i_levels()
           end
         end
       end
-      log("final milestones: "..count(self.milestones))
     end
 
   }

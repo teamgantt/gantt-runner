@@ -4,7 +4,7 @@ function i_game()
 	 g={
 		total_milestones=0,
 		status="", --running, win, lose
-		scene="menu", --menu, select, game, summary
+		scene="menu", --menu, select, game, summary, stats
 		level=1,
 		levels={},
 		start_t=t(),
@@ -39,6 +39,8 @@ function i_game()
 				extcmd("set_filename", "latest_ganttrunner_run.gif")
 				extcmd("video")
 			end
+
+
 		)
 		end,
 
@@ -46,14 +48,27 @@ function i_game()
 			if (type == "win") then
 				g.status="win"
 				sfx(8)
+				stats:update('total_wins', 1)
 			else
 				g.status="lose"
 				sfx(6)
+				stats:update('total_falls', 1)
 			end
 			player.dx=0 -- ensure player stops
 			g.end_t = g.cur_t
 			player.score=g:calculate_score()
 			g.scene="summary"
+			stats:update('total_points', player.score)
+			stats:update('total_runs', 1)
+			stats:update('total_jumps', player.jumps)
+			stats:update('milestones', player.milestones)
+			stats:update('total_time', g.cur_t)
+			if (g.character == 'john') then
+				stats:update('john_runs', 1)
+			else
+				stats:update('nathan_runs', 1)
+			end
+			stats:store_all()
 		end,
 
 		calculate_score=function(self)
