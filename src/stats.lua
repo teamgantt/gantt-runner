@@ -107,46 +107,50 @@ function d_stats()
 	spr(248, cam.x+2, 2, 2, 2) --tg logo
   print('SUPER GANTT RUNNER STATS', cam.x+16, cam.y+4, 7)
 
+  --horizontal divider
   line(cam.x+2, cam.y+12, cam.x+126, cam.y+12, 7) --line
 
+  --vertical divider
+  line(cam.x+42, cam.y+12, cam.x+42, cam.y+110, 7)
+
   spr(46, cam.x+44+stat_offx, cam.y+35+stat_offy) --time
-	print('total time: ', cam.x+56+stat_offx, cam.y+37+stat_offy, 6)
-  print((stats.data.total_time / 60 / 60)..' hrs', cam.x+110+stat_offx, cam.y+37+stat_offy, 7)
+	print('total', cam.x+56+stat_offx, cam.y+37+stat_offy, 6)
+  print((stats.data.total_time / 60 / 60)..' hrs', cam.x+88+stat_offx, cam.y+37+stat_offy, 7)
 
 
 	spr(18, cam.x+44+stat_offx, cam.y+45+stat_offy) --milestones
-  print('milestones: ', cam.x+56+stat_offx, cam.y+47+stat_offy, 6)
-  print(stats.data.milestones, cam.x+110+stat_offx, cam.y+47+stat_offy, 7)
+  print('miles', cam.x+56+stat_offx, cam.y+47+stat_offy, 6)
+  print(stats.data.milestones, cam.x+88+stat_offx, cam.y+47+stat_offy, 7)
 
   spr(102, cam.x+44+stat_offx, cam.y+55+stat_offy) --jumps
-  print('total jumps: ', cam.x+56+stat_offx, cam.y+57+stat_offy, 6)
-  print(stats.data.total_jumps, cam.x+110+stat_offx, cam.y+57+stat_offy, 7)
+  print('jumps', cam.x+56+stat_offx, cam.y+57+stat_offy, 6)
+  print(stats.data.total_jumps, cam.x+88+stat_offx, cam.y+57+stat_offy, 7)
 
   spr(16, cam.x+44+stat_offx, cam.y+65+stat_offy) --score
-  print('total pts: ', cam.x+56+stat_offx, cam.y+67+stat_offy, 6)
-  print(stats.data.total_points, cam.x+110+stat_offx, cam.y+67+stat_offy, 7)
+  print('pts', cam.x+56+stat_offx, cam.y+67+stat_offy, 6)
+  print(stats.data.total_points, cam.x+88+stat_offx, cam.y+67+stat_offy, 7)
 
   -- runs
-  spr(71, cam.x+44+stat_offx, cam.y+75+stat_offy) --runs
-  print('nathan runs: ', cam.x+56+stat_offx, cam.y+77+stat_offy, 6)
-  print(stats.data.nathan_runs, cam.x+110+stat_offx, cam.y+77+stat_offy, 7)
+  spr(71, cam.x+45+stat_offx, cam.y+75+stat_offy) --runs
+  print('nathan', cam.x+56+stat_offx, cam.y+77+stat_offy, 6)
+  print(stats.data.nathan_runs, cam.x+88+stat_offx, cam.y+77+stat_offy, 7)
 
-  spr(35, cam.x+44+stat_offx, cam.y+85+stat_offy) --john runs
-  print('john runs: ', cam.x+56+stat_offx, cam.y+87+stat_offy, 6)
-  print(stats.data.john_runs, cam.x+110+stat_offx, cam.y+87+stat_offy, 7)
+  spr(35, cam.x+45+stat_offx, cam.y+85+stat_offy) --john runs
+  print('john', cam.x+56+stat_offx, cam.y+87+stat_offy, 6)
+  print(stats.data.john_runs, cam.x+88+stat_offx, cam.y+87+stat_offy, 7)
 
   spr(103, cam.x+44+stat_offx, cam.y+96+stat_offy) --total runs
-  print('total runs: ', cam.x+56+stat_offx, cam.y+97+stat_offy, 6)
-  print(stats.data.total_runs, cam.x+110+stat_offx, cam.y+97+stat_offy, 7)
+  print('runs', cam.x+56+stat_offx, cam.y+97+stat_offy, 6)
+  print(stats.data.total_runs, cam.x+88+stat_offx, cam.y+97+stat_offy, 7)
 
   -- wins
   spr(29, cam.x+44+stat_offx, cam.y+106+stat_offy) --wins
-  print('total wins: ', cam.x+56+stat_offx, cam.y+107+stat_offy, 6)
-  print(stats.data.total_wins, cam.x+110+stat_offx, cam.y+107+stat_offy, 7)
+  print('wins', cam.x+56+stat_offx, cam.y+107+stat_offy, 6)
+  print(stats.data.total_wins, cam.x+88+stat_offx, cam.y+107+stat_offy, 7)
 
   spr(119, cam.x+44+stat_offx, cam.y+116+stat_offy) --falls
-  print('total falls: ', cam.x+56+stat_offx, cam.y+117+stat_offy, 6)
-  print(stats.data.total_falls, cam.x+110+stat_offx, cam.y+117+stat_offy, 7)
+  print('falls', cam.x+56+stat_offx, cam.y+117+stat_offy, 6)
+  print(stats.data.total_falls, cam.x+88+stat_offx, cam.y+117+stat_offy, 7)
 
 
 
