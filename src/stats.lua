@@ -149,12 +149,12 @@ function d_stats()
   print(stats.data.total_falls, cam.x+110+stat_offx, cam.y+117+stat_offy, 7)
 
 
-  print('🅾️ back to menu', cam.x+10, cam.y+121, 6)
 
   if (is_resetting) then
     rectfill(cam.x+2, cam.y+127, cam.x+hold_reset, cam.y+128, 8)
-    print('resetting...', cam.x+84, cam.y+121, 8)
+    print('resetting...', cam.x+44, cam.y+120, 8)
   else
-    print('❎ reset', cam.x+84, cam.y+121, 8)
+    print('🅾️ back to menu', cam.x+10, cam.y+120, 6)
+    print('❎ reset', cam.x+84, cam.y+120, 8)
   end
 end
