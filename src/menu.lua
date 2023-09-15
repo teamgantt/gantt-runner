@@ -65,8 +65,9 @@ function u_menu()
 end
 
 function d_menu()
-	spr(192,28,10,8,4)
-	spr(200,28,42,8,3)
+	-- draw title logo
+	spr(192,28,6,8,4)
+	spr(200,28,38,8,3)
 
 	spr(get_nathan_frames(menu_nathan.is_rolling), menu_nathan.x, menu_nathan.y, 2, 2, menu_nathan.flip_x)
 	spr(menu_john.run_frames[flr(run_anim.f)], menu_john.x, menu_john.y, 2, 2, menu_john.flip_x)
