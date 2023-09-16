@@ -50,17 +50,17 @@ end
 function _update60()
 	if (g.scene == 'menu') then
 		u_menu()
-		menuitem(4, "view game stats",
-			function()
-				g.scene='stats'
-			end
-		)
+		-- menuitem(4, "view game stats",
+		-- 	function()
+		-- 		g.scene='stats'
+		-- 	end
+		-- )
 	elseif (g.scene == 'select') then
 		u_select()
 	elseif (g.scene == 'summary') then
 		u_summary()
-	elseif (g.scene == 'stats') then
-		u_stats()
+	-- elseif (g.scene == 'stats') then
+	-- 	u_stats()
 	else
 		u_player()
 		u_camera_follow()
