@@ -12,3 +12,12 @@ function delay_frames(frames, callback)
 		end
 	end
 end
+
+function hcenter(s, c)
+  -- screen center minus the
+  -- string length times the
+  -- pixels in a char's width,
+  -- cut in half
+	if (c == nil) c = {x=0}
+  return c.x+64-#s*2
+end

@@ -33,6 +33,7 @@ function i_game()
 			player.jumps=0
 			player.x=g.levels[level].player_x
 			player.y=g.levels[level].player_y
+			set_random_msg() -- set random message for win/lose
 
 			menuitem(3, "save run as gif",
 			function()
@@ -45,6 +46,7 @@ function i_game()
 		end,
 
 		end_level=function(type)
+
 			if (type == "win") then
 				g.status="win"
 				sfx(8)

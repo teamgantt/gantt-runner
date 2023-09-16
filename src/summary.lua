@@ -5,6 +5,35 @@ function i_summary()
   banners_bottom={}
   button_access_delay=24
   delay_instructions=button_access_delay
+  msg_idx=flr(rnd(10))
+  fail_msg={
+    'oops, you fell.',
+    'yikes, you fell.',
+    'did you slip?',
+    'doh, you fell.',
+    'sorry, you fell.',
+    'bummer, you fell.',
+    'ouch, go again?',
+    "don't give up!",
+    'forgot to jump?',
+    'what happened?',
+  }
+  win_msg={
+    'nice job!',
+    'you finished!',
+    'not too bad!',
+    'think you can do better?',
+    'wow! not bad!',
+    'strong work!',
+    'you did it!',
+    'you won!',
+    'more milestones!',
+    'radical!',
+  }
+
+  set_random_msg=function()
+    msg_idx=rnd_between(1,10)
+  end
 
   -- add top banner
   for i=1,32 do
@@ -68,9 +97,6 @@ end
 function d_summary()
   local stat_offx = 2
   local stat_offy = 8
-  -- g.end_t = 23.8
-  -- player.milestones = 50
-  -- g.total_milestones = 50
 
   if (g.status=='win') then
     rectfill(cam.x, cam.y, cam.x+127, cam.y+127, 1)
@@ -82,10 +108,13 @@ function d_summary()
       spr(29, cam.x+v.x, cam.y+v.y, 1, 1)
     end
 
-    print('nice job!', cam.x+44, cam.y+90, 8)
+    print(win_msg[msg_idx], cam.x+hcenter(win_msg[msg_idx]), cam.y+90, 12)
   elseif (g.status=='lose') then
+    local msg_w = print(fail_msg[msg_idx], 0, cam.y-128, 9)
     rectfill(cam.x, cam.y, cam.x+127, cam.y+127, 2)
-    print('you fell', cam.x+48, cam.y+90, 9)
+    print(fail_msg[msg_idx], cam.x+hcenter(fail_msg[msg_idx]), cam.y+90, 8)
+    spr(119, cam.x+hcenter(fail_msg[msg_idx])-12, cam.y+88, 1, 1)
+    spr(119, cam.x+hcenter(fail_msg[msg_idx])+msg_w+2, cam.y+88, 1, 1)
   end
   fillp(0)
   rect(cam.x+22, cam.y+12, cam.x+104, cam.y+83, 7)
