@@ -17,7 +17,6 @@ __lua__
 #include src/menu.lua
 #include src/select.lua
 #include src/summary.lua
-#include src/stats.lua
 
 function _init()
 	debug=false
@@ -33,7 +32,6 @@ function _init()
 			printh(str, "log", false)
 		end
 	end
-	i_stats()
 	i_menu()
 	i_camera_follow()
 	i_milestones()
@@ -50,17 +48,10 @@ end
 function _update60()
 	if (g.scene == 'menu') then
 		u_menu()
-		-- menuitem(4, "view game stats",
-		-- 	function()
-		-- 		g.scene='stats'
-		-- 	end
-		-- )
 	elseif (g.scene == 'select') then
 		u_select()
 	elseif (g.scene == 'summary') then
 		u_summary()
-	-- elseif (g.scene == 'stats') then
-	-- 	u_stats()
 	else
 		u_player()
 		u_camera_follow()
@@ -80,8 +71,6 @@ function _draw()
 		d_select();
 	elseif g.scene == 'summary' then
 		d_summary()
-	elseif (g.scene == 'stats') then
-		d_stats()
 	else --game
 		d_game()
 		d_fx()
@@ -106,7 +95,6 @@ end
 -->8
 --milestone
 
---TODO: put this somewhere else
 
 
 -->8

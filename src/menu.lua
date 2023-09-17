@@ -34,11 +34,7 @@ function u_menu()
 
 	if (btnp(❎)) then
 		g.scene = 'select'
-		stats:load_all()
     sfx(2)
-	elseif (btnp(🅾️)) then
-    sfx(1)
-		g.scene = 'stats'
 	end
 
 

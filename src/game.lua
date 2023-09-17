@@ -20,12 +20,12 @@ function i_game()
 
 		-- methods
 		start_level=function(level)
+			extcmd('rec')
 			g.end_t=0
 			g.cur_t=0
 			g.level=level
 			g.levels[level]:setup()
 			g.total_milestones=count(g.levels[level].milestones)
-			extcmd('rec')
 			player.milestones=0
 			g.scene="game"
 			g.status="running"
@@ -33,16 +33,15 @@ function i_game()
 			player.jumps=0
 			player.x=g.levels[level].player_x
 			player.y=g.levels[level].player_y
+
 			set_random_msg() -- set random message for win/lose
 
 			menuitem(3, "save run as gif",
-			function()
-				extcmd("set_filename", "latest_ganttrunner_run.gif")
-				extcmd("video")
-			end
-
-
-		)
+				function()
+					extcmd("set_filename", "latest_ganttrunner_run.gif")
+					extcmd("video")
+				end
+			)
 		end,
 
 		end_level=function(type)
@@ -50,27 +49,14 @@ function i_game()
 			if (type == "win") then
 				g.status="win"
 				sfx(8)
-				stats:update('total_wins', 1)
 			else
 				g.status="lose"
 				sfx(6)
-				stats:update('total_falls', 1)
 			end
 			player.dx=0 -- ensure player stops
 			g.end_t = g.cur_t
 			player.score=g:calculate_score()
 			g.scene="summary"
-			stats:update('total_points', player.score)
-			stats:update('total_runs', 1)
-			stats:update('total_jumps', player.jumps)
-			stats:update('milestones', player.milestones)
-			stats:update('total_time', g.cur_t)
-			if (g.character == 'john') then
-				stats:update('john_runs', 1)
-			else
-				stats:update('nathan_runs', 1)
-			end
-			stats:store_all()
 		end,
 
 		calculate_score=function(self)
@@ -109,6 +95,7 @@ function i_game()
 		 local day=week_days[(i-1)%5+1]
 		 add(g.days, {x=x+3, y=cam.y+2, day=day})
 	 end
+
 
 	 g.levels[1] = level(0,0,128,16,10,60,0,7)
 	 g.levels[2] = level(0,16,128,16,10,40,128,7)
