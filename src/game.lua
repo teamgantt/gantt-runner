@@ -2,9 +2,10 @@ function i_game()
 	week_days={"mon", "tue", "wed", "thu", "fri"}
 	--game object--
 	 g={
+    milestone_pts={};
 		total_milestones=0,
 		status="", --running, win, lose
-		scene="menu", --menu, select, game, summary, stats
+		scene="select", --menu, select, game, summary, procedural
 		level=1,
 		levels={},
 		start_t=t(),
@@ -19,22 +20,34 @@ function i_game()
 		character='nathan',
 
 		-- methods
-		start_level=function(level)
+		start_level=function(lvl)
 			extcmd('rec')
+			cam.x=0
 			g.end_t=0
 			g.cur_t=0
-			g.level=level
-			g.levels[level]:setup()
-			g.total_milestones=count(g.levels[level].milestones)
+			g.level=lvl
+			g.total_milestones=0
+
+			if (lvl == 4) then
+				g.scene="procedural"
+        srand(global_seed)
+				g.levels[4] = level(0,0,128,16,10,10,0,7)
+				g.levels[lvl]:setup()
+			else
+			  g.scene="game"
+				g.levels[1] = level(0,0,128,16,10,60,0,7)
+				g.levels[2] = level(0,16,128,16,10,40,128,7)
+				g.levels[3] = level(0,32,128,16,10,30,128*2,7)
+				g.levels[lvl]:setup()
+				g.total_milestones=count(g.levels[lvl].milestones)
+			end
+
 			player.milestones=0
-			g.scene="game"
 			g.status="running"
 			g.start_t=t()
 			player.jumps=0
-			player.x=g.levels[level].player_x
-			player.y=g.levels[level].player_y
-
-			set_random_msg() -- set random message for win/lose
+			player.x=g.levels[lvl].player_x
+			player.y=g.levels[lvl].player_y
 
 			menuitem(3, "save run as gif",
 				function()
@@ -45,7 +58,6 @@ function i_game()
 		end,
 
 		end_level=function(type)
-
 			if (type == "win") then
 				g.status="win"
 				sfx(8)
@@ -53,10 +65,13 @@ function i_game()
 				g.status="lose"
 				sfx(6)
 			end
+
 			player.dx=0 -- ensure player stops
+			player.dy=0
 			g.end_t = g.cur_t
 			player.score=g:calculate_score()
 			g.scene="summary"
+			g.levels[g.level]:tear_down()
 		end,
 
 		calculate_score=function(self)
@@ -83,23 +98,6 @@ function i_game()
 			return flr(i)
 		end
 	 }
-
-	 -- day lines
-	 for i=1,g.max_day_lines do
-		 local x=cam.x+16*i
-		 local y0=cam.y+0
-		 local y1=cam.y+128
-		 add(g.day_lines, {x=x, y0=y0, y1=y1})
-
-		 -- add days of week to the day lines
-		 local day=week_days[(i-1)%5+1]
-		 add(g.days, {x=x+3, y=cam.y+2, day=day})
-	 end
-
-
-	 g.levels[1] = level(0,0,128,16,10,60,0,7)
-	 g.levels[2] = level(0,16,128,16,10,40,128,7)
-	 g.levels[3] = level(0,32,128,16,10,30,128*2,7)
  end
 
 function u_game()
@@ -107,24 +105,26 @@ function u_game()
 
 	-- update the current level
 	g.levels[g.level]:update()
+
+	-- animate milestone pts
+	for k,mile in pairs(g.milestone_pts) do
+		mile.y -= 1
+		mile.f += 1
+		if (mile.f > 10) then
+			del(g.milestone_pts, mile)
+		end
+	end
 end
 
 function d_game()
-	 -- draw bg
-	 cls()
-	 rectfill(cam.x,cam.y,cam.x+128, cam.y+128, g.levels[g.level].color_bg)
-
-	for k,day_line in ipairs(g.day_lines) do
-		line(day_line.x, day_line.y0, day_line.x, day_line.y1, g.line_color)
-	end
-
-	-- draw days of week
-	for k,day in ipairs(g.days) do
-		print(day.day, day.x, day.y, g.line_color)
-	end
-
-	-- day horizontal line
-	line(cam.x, cam.y+8, cam.x+128, cam.y+8, g.line_color)
+	-- draw bg
+	cls()
+	rectfill(cam.x,cam.y,cam.x+128, cam.y+128, g.levels[g.level].color_bg)
 
 	g.levels[g.level]:draw()
+
+	-- draw milestone pts
+	for k,mile in ipairs(g.milestone_pts) do
+		print('100', mile.x, mile.y, 9)
+	end
 end

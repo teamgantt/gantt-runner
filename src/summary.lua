@@ -5,35 +5,9 @@ function i_summary()
   banners_bottom={}
   button_access_delay=24
   delay_instructions=button_access_delay
-  msg_idx=flr(rnd(10))
-  fail_msg={
-    'oops, you fell.',
-    'yikes, you fell.',
-    'did you slip?',
-    'doh, you fell.',
-    'sorry, you fell.',
-    'bummer, you fell.',
-    'ouch, go again?',
-    "don't give up!",
-    'forgot to jump?',
-    'what happened?',
-  }
-  win_msg={
-    'nice job!',
-    'you finished!',
-    'not too bad!',
-    'think you can do better?',
-    'wow! not bad!',
-    'strong work!',
-    'you did it!',
-    'you won!',
-    'more milestones!',
-    'radical!',
-  }
-
-  set_random_msg=function()
-    msg_idx=rnd_between(1,10)
-  end
+  msg_idx=1
+  fail_msg='oops, you fell.'
+  win_msg='nice job!'
 
   -- add top banner
   for i=1,32 do
@@ -108,13 +82,13 @@ function d_summary()
       spr(29, cam.x+v.x, cam.y+v.y, 1, 1)
     end
 
-    print(win_msg[msg_idx], cam.x+hcenter(win_msg[msg_idx]), cam.y+90, 12)
+    print(win_msg, cam.x+hcenter(win_msg), cam.y+90, 12)
   elseif (g.status=='lose') then
-    local msg_w = print(fail_msg[msg_idx], 0, cam.y-128, 9)
+    local msg_w = print(fail_msg, 0, cam.y-128, 9)
     rectfill(cam.x, cam.y, cam.x+127, cam.y+127, 2)
-    print(fail_msg[msg_idx], cam.x+hcenter(fail_msg[msg_idx]), cam.y+90, 8)
-    spr(119, cam.x+hcenter(fail_msg[msg_idx])-12, cam.y+88, 1, 1)
-    spr(119, cam.x+hcenter(fail_msg[msg_idx])+msg_w+2, cam.y+88, 1, 1)
+    print(fail_msg, cam.x+hcenter(fail_msg), cam.y+90, 8)
+    spr(119, cam.x+hcenter(fail_msg)-12, cam.y+88, 1, 1)
+    spr(119, cam.x+hcenter(fail_msg)+msg_w+2, cam.y+88, 1, 1)
   end
   fillp(0)
   rect(cam.x+22, cam.y+12, cam.x+104, cam.y+83, 7)
@@ -124,7 +98,7 @@ function d_summary()
 	spr(248, cam.x+29, 19, 2, 2) --tg logo
 	print('run summary', cam.x+44, cam.y+21, 7)
 
-  print('project '..g.level, cam.x+42+stat_offx, cam.y+26+stat_offy, 7)
+  print('project '..g.level..'-'..global_seed, hcenter('project '..g.level..'-'..global_seed, cam), cam.y+26+stat_offy, 7)
 
   spr(46, cam.x+44+stat_offx, cam.y+35+stat_offy) --time
 	print(g.end_t..' sec', cam.x+56+stat_offx, cam.y+37+stat_offy, 7)

@@ -228,9 +228,16 @@ function u_player()
 	player:handle_coyote_time()
 
 	--check for collision with platform
-	if (player.dy > 0 and collide_map(player,"down",0)) then
+	local collide = collide_map
+	if (g.scene == 'procedural') then
+		collide = collide_map_procedural
+	else
+		collide = collide_map
+	end
+
+	if (player.dy > 0 and collide(player,"down",0)) then
 		--player hit jump button before landing while close to platform
-		if player.jump_intent_t > 0 and not collide_map(player, "down", 2) then
+		if player.jump_intent_t > 0 and not collide(player, "down", 2) then
 			player:jump()
 			player.jump_intent_t=0
 			return
@@ -260,11 +267,12 @@ function u_player()
 		g.end_level('lose')
 	end
 
-	--check for finish (flag2)
-	if (collide_map(player, "down", 2)) then
-		--TODO: add finish particles and timer to next scene
-		g.end_level('win')
-	end
+
+		--check for finish (flag2)
+		if (collide_map(player, "down", 2)) then
+			g.end_level('win')
+		end
+
 end
 
 function d_player()

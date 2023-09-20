@@ -1,6 +1,8 @@
 
-function rnd_between(min, max)
-	return flr(rnd(max-min+1))+min
+function rnd_between(min, max, seed)
+	if (seed) then srand(seed) end
+	-- return a random number between min and max
+	return flr(rnd(max-min))+min
 end
 
 function delay_frames(frames, callback)
