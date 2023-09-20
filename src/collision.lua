@@ -39,13 +39,33 @@ function collide_map(p,dir,flag)
 
 end
 
+function collide_map_procedural(p)
+	local level = g.levels[4]
+	if (p.dy < 0) then --moving upwards
+		return false
+	end
+
+	for k,chunk in pairs(level.chunks) do
+		for i, bar in pairs(chunk.bars) do
+			if player.x+8 >= bar.x and player.x <= bar.x+8 then
+				if player.feet_y >= bar.y and player.feet_y <= bar.y+8 then
+					p.y=bar.y-16
+					p.on_ground=true
+					return true
+				end
+			end
+		end
+
+	end
+end
+
 function milestone_collide(level)
 	-- check for collision with milestone
-	for k,mile in ipairs(level.milestones) do
+	for k,mile in pairs(level.milestones) do
 		if (check_collision(player.x, player.y, 16, 16, mile.x, mile.y, 8, 8)) then
 			prev_milestone_x = mile.x
 			del(level.milestones, mile)
-			add(level.milestone_pts, {x=mile.x, y=mile.y-8, f=0})
+			add(g.milestone_pts, {x=mile.x, y=mile.y-8, f=0})
 			player.milestones+=1
 			sfx(2)
 		end

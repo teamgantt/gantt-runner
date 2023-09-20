@@ -2,17 +2,6 @@
 function i_particles()
   --particles
   effects = {}
-
-  --effects settings
-  explode_size = 5
-  explode_colors = {8,9,6,5}
-  explode_amount = 5
-
-  --sfx
-  -- trail_sfx = 0
-  -- explode_sfx = 1
-  -- fire_sfx = 2
-
 end
 
 function add_fx(x,y,die,dx,dy,grav,grow,shrink,r,c_table)
@@ -76,17 +65,17 @@ end
 function dust(x,y,r,l,c_table,num)
   for i=0, num do
       --settings
-      add_fx(
-          x,         -- x
-          y,         -- y
-          l+rnd(4), -- die
-          rnd(2)-1,  -- dx
-          rnd(2)-3,  -- dy
-          true,      -- gravity
-          false,     -- grow
-          true,      -- shrink
-          r,         -- radius
-          c_table    -- color_table
-      )
+      -- add_fx(
+      --     x,         -- x
+      --     y,         -- y
+      --     l, -- die
+      --     2,  -- dx
+      --     1,  -- dy
+      --     false,      -- gravity
+      --     false,     -- grow
+      --     true,      -- shrink
+      --     r,         -- radius
+      --     c_table    -- color_table
+      -- )
   end
 end
