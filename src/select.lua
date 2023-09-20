@@ -57,12 +57,11 @@ function u_select()
       max_choice = 3
       select_box_character.x = 28 -- reset
       select_box_lvl.x = 38 -- reset
-      sfx(4)
     elseif (select_type == 'level') then
       g.start_level(selected_index)
       max_choice = 2
     end
-    sfx(4)
+    sfx(20)
   end
 
 
