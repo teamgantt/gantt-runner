@@ -65,17 +65,17 @@ end
 function dust(x,y,r,l,c_table,num)
   for i=0, num do
       --settings
-      add_fx(
-          x,         -- x
-          y,         -- y
-          l+2, -- die
-          2-1,  -- dx
-          2-3,  -- dy
-          true,      -- gravity
-          false,     -- grow
-          true,      -- shrink
-          r,         -- radius
-          c_table    -- color_table
-      )
+      -- add_fx(
+      --     x,         -- x
+      --     y,         -- y
+      --     l, -- die
+      --     2,  -- dx
+      --     1,  -- dy
+      --     false,      -- gravity
+      --     false,     -- grow
+      --     true,      -- shrink
+      --     r,         -- radius
+      --     c_table    -- color_table
+      -- )
   end
 end

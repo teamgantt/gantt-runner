@@ -5,7 +5,7 @@ function i_game()
     milestone_pts={};
 		total_milestones=0,
 		status="", --running, win, lose
-		scene="select", --menu, select, game, summary, procedural
+		scene="menu", --menu, select, game, summary, procedural
 		level=1,
 		levels={},
 		start_t=t(),

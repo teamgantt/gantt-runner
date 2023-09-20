@@ -133,10 +133,10 @@ function i_levels()
       -- procedural level we use generated chunks
       if g.scene == 'procedural' then
         self:draw_days()
-        print('#chunks: '..#self.chunks, cam.x+20,20, 11)
-        print('seed '..global_seed, cam.x+20,30, 11)
-        print('days '..#days, cam.x+20,60, 11)
-        print('day lines '..#day_lines, cam.x+20,70, 11)
+        -- print('#chunks: '..#self.chunks, cam.x+20,20, 11)
+        -- print('seed '..global_seed, cam.x+20,30, 11)
+        -- print('days '..#days, cam.x+20,60, 11)
+        -- print('day lines '..#day_lines, cam.x+20,70, 11)
 
         -- get string of chunk numbers
         local chunk_str = ''
@@ -144,7 +144,7 @@ function i_levels()
           chunk_str = chunk_str..chunk.template_idx..','
         end
 
-        print('chunk ids: '..chunk_str, cam.x+20,40, 11)
+        -- print('chunk ids: '..chunk_str, cam.x+20,40, 11)
 
         for k,chunk in pairs(self.chunks) do
           chunk:draw()
