@@ -60,7 +60,8 @@ function i_player()
 			self.on_platform=false
 			self.coyote_time=0
 			self.jumps+=1
-			dust(self.feet_x-4,self.feet_y,2,5,{5,6,7},4)
+			add_poof(self.feet_x-4,self.feet_y-8,'l')
+			add_poof(self.feet_x+4,self.feet_y-8,'r')
 		end,
 
 		-- sfx
@@ -119,6 +120,11 @@ function i_player()
 			if (run_sfx.elapsed >= 1) then
 				run_sfx.elapsed=0
 				sfx(player.sfx_step)
+				if player.dx>0 then
+					add_poof(player.x-4+player.w/2,player.y+player.h/2,'r')
+				else
+					add_poof(player.x+player.w/2,player.y+player.h/2,'l')
+				end
 			end
 		end
 	}
@@ -208,7 +214,6 @@ function u_player()
 		run_anim.f=run_anim.f+run_anim.timing
 
 		if player.move == 'sprint' then
-			dust(player.feet_x,player.feet_y,2,1,{5,6,7},4)
 			run_sfx.step(.15)
 		end
 	else
@@ -237,7 +242,8 @@ function u_player()
 		end
 
 		if (not player.on_platform) then
-			dust(player.feet_x,player.feet_y+6,2,5,{5,6,7},4)
+			add_poof(player.x+player.w/2,player.y+player.h/2,'l')
+			add_poof(player.x+player.w/2,player.y+player.h/2,'r')
 		end
 
 
