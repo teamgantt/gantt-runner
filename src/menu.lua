@@ -70,7 +70,6 @@ function d_menu()
 
 
   print('❎ to start', cam.x+40, 68, 7)
-	-- print('🅾️ stats', cam.x+44, 76, 6)
 
 	-- draw task bar
 	rectfill(cam.x-1, cam.y+100, cam.x+129, cam.y+108, 10)
