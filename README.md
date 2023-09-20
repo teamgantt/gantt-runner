@@ -1,8 +1,42 @@
-# Gantt Runner
+# Super Gantt Runner -
 
-A tiny game by TeamGantt Engineering
+A tiny 8-bit style game by TeamGantt Engineering
 
-![gantt runner](gantt-runner.gif)
+![pico-8 cart](gantt-runner.p8.png)
+
+![gantt runner](gantt_runner_0.gif)
+![gantt runner gif](gantt_runner_1.gif)
+![another gantt runner gif](gantt_runner_2.gif)
+
+## The Game
+
+Help Lil John and Barrel Nathan nab those milestones as they reach the end of the projects.
+
+[Play Super Gantt Runner](https://gantt-runner.netlify.app)
+
+- **X** to Jump
+- **Z** to Sprint
+- **⬇️** + **X** to Super Jump
+- ⬅️ or ➡️ to run
+
+#### Features
+
+- Pixel art!
+- Two characters, each with unique attributes
+- Gantt charts
+- Milestone collection
+- That "just one more try" speed run gameplay
+- How fast can you get all the milestones?
+- More gantt charts
+
+#### FAQ
+
+- What is this made with?
+  - [Pico 8](https://www.lexaloffle.com/pico-8.php) - a wonderful little Fantasy Console
+- Does it work on mobile?
+  - Yes! Quite well. Try it on your phone for a gameboy-like experience.
+- Why is Nathan in a barrel?
+  - This is a mystery only solved by visiting the [Teamgantt website](https://www.teamgantt.com)
 
 ## Developing
 
