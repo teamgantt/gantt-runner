@@ -52,6 +52,17 @@ function milestone_collide(level)
 	end
 end
 
+function spring_collide(level)
+	-- check for collision with milestone
+	for k,spring in ipairs(level.springs) do
+		if (check_collision(player.x, player.y, 16, 16, spring.x, spring.y, 8, 8)) then
+			spring.up=1
+			player.dy=-player[g.character].boost*2
+			sfx(21)
+		end
+	end
+end
+
 -- Collision detection function;
 -- Returns true if two boxes overlap, false if they don't;
 -- x1,y1 are the top-left coords of the first box, while w1,h1 are its width and height;

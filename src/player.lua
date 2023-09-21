@@ -28,6 +28,7 @@ function i_player()
 		w=12,
 		x=40,
 		y=60,
+		holding_jump=false,
 		has_double=true,
 		coyote_time=0,
 		feet_x=8,
@@ -173,7 +174,9 @@ function u_player()
 	elseif (
 		btnp(❎) and
 		player.falling and --
-		(player[g.character].can_double == true and player.has_double == true)) then
+		(player[g.character].can_double == true
+		 and player.has_double == true)
+		 and not player.holding_jump) then
 			player:jump()
 			player.has_double=false
 	end
@@ -223,8 +226,10 @@ function u_player()
 	--apply gravity based on if player is holding jump
 	if btn(❎) then
 		player.dy+=gravity
+		player.holding_jump=true
 	else
 		sfx(player.sfx_jump, -2)
+		player.holding_jump=false
 		player.dy+=fall_gravity
 	end
 
@@ -245,7 +250,6 @@ function u_player()
 			add_poof(player.x+player.w/2,player.y+player.h/2,'l')
 			add_poof(player.x+player.w/2,player.y+player.h/2,'r')
 		end
-
 
 		player.on_platform=true
 		player.has_double=true

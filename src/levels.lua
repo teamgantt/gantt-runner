@@ -12,6 +12,7 @@ function i_levels()
     player_x=10; -- player start position
     player_y=60;
     offset_y=0; -- collision offset for map
+    springs={};
     milestones={};
     milestone_cache={};
     milestone_pts={};
@@ -31,8 +32,13 @@ function i_levels()
 
     update = function(self)
       	--animate milestone
-      for k,mile in ipairs(self.milestones) do
+      for k,mile in pairs(self.milestones) do
         mile:animate()
+      end
+
+      -- animate springs
+      for k,spring in pairs(self.springs) do
+        spring:animate()
       end
 
       -- animate milestone pts
@@ -46,10 +52,11 @@ function i_levels()
 
       -- handle collisions
       milestone_collide(self)
+      spring_collide(self)
     end;
 
     setup = function(self)
-      self:setup_milestones()
+      self:setup_special_tiles()
     end;
 
     draw = function(self)
@@ -64,11 +71,16 @@ function i_levels()
       for k,mile in ipairs(self.milestone_pts) do
         print('100', mile.x, mile.y, 9)
       end
+
+      -- draw springs
+      for k,spring in ipairs(self.springs) do
+        spr(spring.s, spring.x, spring.y)
+      end
     end;
 
 
     --cell coordinates for replacing "m" with milestones
-    setup_milestones = function(self)
+    setup_special_tiles = function(self)
       local cache = self.milestone_cache
       local cache_empty = count(cache) == 0
       local start_x = self.start_cell_x
@@ -99,7 +111,7 @@ function i_levels()
 
       for x=start_x,end_x do
         for y=start_y,end_y do
-
+          -- check for milestone and replace with empty
           if (fget(mget(x,y), 1)) then
             local milestone = {
               x=x*8,
@@ -111,6 +123,31 @@ function i_levels()
             add(self.milestones, milestone)
             if (cache_empty) add(cache, milestone)
 
+            mset(x,y,0)
+          end
+
+          -- check for springboard
+          if (fget(mget(x,y), 3)) then
+            local spring = {
+              x=x*8,
+              y=y*8-y_offset,
+              t=0,
+              up=0,
+              s=122,
+              animate=function(self)
+                if (self.up==1) then
+                  self.s=123
+                  self.t += 1
+                  if (self.t > 10) then
+                    self.up = 0
+                    self.t = 0
+                    self.s=122
+                  end
+                end
+              end
+            }
+
+            add(self.springs, spring)
             mset(x,y,0)
           end
         end
