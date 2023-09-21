@@ -129,6 +129,8 @@ function d_select()
 
   -- level selection box and images
   elseif (select_type == 'level') then
+    local stats_offset_x = 32
+    local stats_offset_y = 64
     rect(select_box_lvl.x, select_box_lvl.y, select_box_lvl.x+select_box_lvl.w, select_box_lvl.y+select_box_lvl.h, 7)
     print('select project '..selected_index, cam.x+32, 2, 7)
 
@@ -144,9 +146,41 @@ function d_select()
 
     local prev_time=stats.levels[selected_index].time
     local prev_pts=stats.levels[selected_index].pts
-    print('prev time: '..prev_time, cam.x+4+stats_offset_x, 16+stats_offset_y, 7)
-    print('prev pts: '..prev_pts, cam.x+4+stats_offset_x, 28+stats_offset_y, 7)
-    -- print('best run:', cam.x+12+stats_offset_x, 28+stats_offset_y, 7)
+    local best_time=stats.levels[selected_index].best_time
+    local best_pts=stats.levels[selected_index].best_pts
+    local best_miles=stats.levels[selected_index].best_miles
+
+    -- draw out level stats
+
+    -- best pts
+    print('BEST RUN', cam.x+stats_offset_x-8, stats_offset_y-8, 7)
+    spr(16, cam.x-8+stats_offset_x, 2+stats_offset_y, 1, 1) --stopwatch
+    print(best_pts, cam.x+4+stats_offset_x, 4+stats_offset_y, 11)
+
+    -- best time
+    spr(46, cam.x-8+stats_offset_x, 14+stats_offset_y, 1, 1) --trophy
+    print(best_time, cam.x+4+stats_offset_x, 16+stats_offset_y, 11)
+
+
+    -- best miles
+    spr(18, cam.x-8+stats_offset_x, 26+stats_offset_y, 1, 1) --milestone
+    print(best_miles, cam.x+4+stats_offset_x, 28+stats_offset_y, 11)
+
+    -- prev run
+    print('LAST RUN', cam.x+42+stats_offset_x, stats_offset_y-8, 7)
+
+    -- prev pts
+    spr(16, cam.x+stats_offset_x+40, 2+stats_offset_y, 1, 1) --stopwatch
+    print(prev_pts, cam.x+stats_offset_x+52, 4+stats_offset_y, 6)
+
+    -- prev time
+    spr(46, cam.x+stats_offset_x+40, 14+stats_offset_y, 1, 1) --trophy
+    print(prev_time, cam.x+stats_offset_x+52, 16+stats_offset_y, 6)
+
+    -- prev miles
+    spr(18, cam.x+stats_offset_x+40, 26+stats_offset_y, 1, 1) --milestone
+    print(stats.levels[selected_index].miles, cam.x+stats_offset_x+52, 28+stats_offset_y, 6)
+
   end
 
   print('press ⬅️ or ➡️ to change', cam.x+16, cam.y+110, 6)

@@ -5,36 +5,78 @@ function i_stats()
       {
         pts=0,
         time=0,
+        miles=0,
+        best_pts=0,
+        best_time=0,
+        best_miles=0
       },
       {
         pts=0,
         time=0,
+        miles=0,
+        best_pts=0,
+        best_time=0,
+        best_miles=0
       },
       {
         pts=0,
         time=0,
+        miles=0,
+        best_pts=0,
+        best_time=0,
+        best_miles=0
       },
     },
 
     level_stat_addresses={
-      {
-        pts=0,
-        time=1
+        {
+          pts=0,
+          time=1,
+          miles=2,
+          best_pts=3,
+          best_time=4,
+          best_miles=5
+        },
+        {
+          pts=6,
+          time=7,
+          miles=8,
+          best_pts=9,
+          best_time=10,
+          best_miles=11
+        },
+        {
+          pts=12,
+          time=13,
+          miles=14,
+          best_pts=15,
+          best_time=16,
+          best_miles=17
+        }
       },
-      {
-        pts=2,
-        time=3
-      },
-      {
-        pts=4,
-        time=5
-      }
-    },
 
-    store_level_stat=function(self, level, stat, val)
-      self.levels[level][stat]=val
-      dset(self.level_stat_addresses[level][stat], val)
-      -- log('stored '..stat..' for level '..level..' as '..val)
+    store_level_stat=function(self, level, stat_tbl)
+      local pts=stat_tbl.pts
+      local time=stat_tbl.time
+      local miles=stat_tbl.miles
+
+      self.levels[level].pts=pts
+      self.levels[level].time=time
+      self.levels[level].miles=miles
+
+      -- if this is a new best pts, store it
+      if pts>self.levels[level].best_pts then
+        self.levels[level].best_pts=pts
+
+        dset(self.level_stat_addresses[level].best_pts, pts)
+        dset(self.level_stat_addresses[level].best_time, time)
+        dset(self.level_stat_addresses[level].best_miles, miles)
+      end
+
+      -- store as previous
+      dset(self.level_stat_addresses[level].pts, pts)
+      dset(self.level_stat_addresses[level].time, time)
+      dset(self.level_stat_addresses[level].miles, miles)
     end,
 
     load_level_stats=function(self)
@@ -47,9 +89,18 @@ function i_stats()
       for i,v in pairs(self.level_stat_addresses) do
         local pts=dget(v.pts)
         local time=dget(v.time)
+        local miles=dget(v.miles)
+        local best_pts=dget(v.best_pts)
+        local best_time=dget(v.best_time)
+        local best_miles=dget(v.best_miles)
+
         log('loaded '..i..' p:'..pts..' t:'..time)
         self.levels[i].pts=pts
         self.levels[i].time=time
+        self.levels[i].miles=miles
+        self.levels[i].best_pts=best_pts
+        self.levels[i].best_time=best_time
+        self.levels[i].best_miles=best_miles
       end
     end,
   }

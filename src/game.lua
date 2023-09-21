@@ -52,8 +52,11 @@ function i_game()
 
 			if (type == "win") then
 				g.status="win"
-				stats:store_level_stat(g.level, 'pts', player.score)
-				stats:store_level_stat(g.level, 'time', g.end_t)
+				stats:store_level_stat(g.level,  {
+					pts=player.score,
+					miles=player.milestones,
+					time=g.end_t,
+				})
 				sfx(8)
 			else
 				g.status="lose"
@@ -64,12 +67,24 @@ function i_game()
 		end,
 
 		calculate_score=function(self)
-
 			local i = ceil(player.milestones * (1/g.end_t) * 1000)
 
 			if (player.milestones > 0 and player.milestones==g.total_milestones) then
 				i+=3000 --milestone bonus for getting all milestones
 			end
+
+			-- over 30 milestones
+			if (player.milestones > 30) i+=1000
+
+			-- win and less than 10 seconds
+			if (g.status=="win" and g.end_t < 8) i+=1000
+
+			-- win and less than 8 seconds
+			if (g.status=="win" and g.end_t < 10) i+=500
+
+			-- if win and less than 20 seconds
+			if (g.status=="win" and g.end_t < 15) i+=250
+
 
 			-- subtract points per second
 			i-=(self.cur_t*10)
@@ -80,9 +95,7 @@ function i_game()
 			-- subtract points per jump
 			i-=(player.jumps*10)
 
-			if (i < 0) then
-				i=0
-			end
+			if (i < 0) i=0
 
 			return flr(i)
 		end
