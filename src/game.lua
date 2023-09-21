@@ -46,16 +46,20 @@ function i_game()
 
 		end_level=function(type)
 
+			player.dx=0 -- ensure player stops
+			g.end_t = g.cur_t
+			player.score=g:calculate_score()
+
 			if (type == "win") then
 				g.status="win"
+				stats:store_level_stat(g.level, 'pts', player.score)
+				stats:store_level_stat(g.level, 'time', g.end_t)
 				sfx(8)
 			else
 				g.status="lose"
 				sfx(6)
 			end
-			player.dx=0 -- ensure player stops
-			g.end_t = g.cur_t
-			player.score=g:calculate_score()
+
 			g.scene="summary"
 		end,
 

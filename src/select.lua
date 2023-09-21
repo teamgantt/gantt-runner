@@ -10,7 +10,7 @@ function i_select()
   }
   select_box_lvl={
     x=32,
-    y=40,
+    y=20,
     w=19,
     h=19
   }
@@ -57,6 +57,7 @@ function u_select()
       max_choice = 3
       select_box_character.x = 28 -- reset
       select_box_lvl.x = 38 -- reset
+      stats:load_level_stats()
     elseif (select_type == 'level') then
       g.start_level(selected_index)
       max_choice = 2
@@ -83,7 +84,7 @@ function d_select()
 
   -- draw selection box
   if (select_type == 'character') then
-    print('select character', cam.x+32, 1, 7)
+    print('select character', cam.x+32, 2, 7)
     rect(select_box_character.x, select_box_character.y+char_offset_y, select_box_character.x+select_box_character.w+char_offset_x, select_box_character.y+select_box_character.h+char_offset_y, 7)
 
     if selected_index == 1 then
@@ -129,15 +130,23 @@ function d_select()
   -- level selection box and images
   elseif (select_type == 'level') then
     rect(select_box_lvl.x, select_box_lvl.y, select_box_lvl.x+select_box_lvl.w, select_box_lvl.y+select_box_lvl.h, 7)
-    print('select project '..selected_index, cam.x+32, 1, 7)
+    print('select project '..selected_index, cam.x+32, 2, 7)
 
     local lvl_spr = {
       x=32,
-      y=42,
+      y=22,
     }
     spr(76, lvl_spr.x, lvl_spr.y, 2, 2)
     spr(78, lvl_spr.x+24, lvl_spr.y, 2, 2)
     spr(108,lvl_spr.x+48, lvl_spr.y, 2, 2)
+
+    line(cam.x+14, 50, cam.x+110, 50, 7)
+
+    local prev_time=stats.levels[selected_index].time
+    local prev_pts=stats.levels[selected_index].pts
+    print('prev time: '..prev_time, cam.x+4+stats_offset_x, 16+stats_offset_y, 7)
+    print('prev pts: '..prev_pts, cam.x+4+stats_offset_x, 28+stats_offset_y, 7)
+    -- print('best run:', cam.x+12+stats_offset_x, 28+stats_offset_y, 7)
   end
 
   print('press ⬅️ or ➡️ to change', cam.x+16, cam.y+110, 6)
