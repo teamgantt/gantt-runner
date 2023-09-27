@@ -21,6 +21,7 @@ __lua__
 
 function _init()
 	debug=false
+	sprint_hold=false
 	local fetched_data = cartdata('sgr_level_stats')
 	printh("fetched_data: "..tostr(fetched_data), 'log')
 
@@ -44,7 +45,6 @@ function _init()
 	i_particles()
 	i_summary()
 	i_stats()
-
 end
 
 function _update60()
@@ -61,6 +61,17 @@ function _update60()
 		u_game()
 		u_fx()
 	end
+
+	--update menus
+	local sprint_menu_label = "sprint [hold]"
+	if (sprint_hold) sprint_menu_label = "sprint [toggle]"
+
+
+	menuitem(4, sprint_menu_label,
+		function(b)
+			sprint_hold = not sprint_hold
+		end
+	)
 end
 
 function _draw()
