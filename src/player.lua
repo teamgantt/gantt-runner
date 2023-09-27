@@ -9,6 +9,7 @@ function i_player()
 		timing=.2
 	}
 	player={
+
 		-- player stats
 		score=0,
 		milestones=0,
@@ -19,8 +20,6 @@ function i_player()
 		dx=0,
 		dy=0,
 		max_dy=2.5,
-
-		-- player state
 		tile=0,
 		jump_intent_t=0, -- 8 frames of allowance to accept a new jump
 		flip_x=false,
@@ -28,6 +27,7 @@ function i_player()
 		w=12,
 		x=40,
 		y=60,
+		sprint_on=false,
 		holding_jump=false,
 		has_double=true,
 		coyote_time=0,
@@ -182,8 +182,20 @@ function u_player()
 	end
 
 	--sprinting
-	-- apply less friction if sprinting and holding a direction
-	if (btn(🅾️) and ((player.dx<0 and btn(⬅️))  or (player.dx>0 and btn(➡️)))) then
+
+	if (sprint_hold) then
+		if (btnp(🅾️)) then
+			player.sprint_on=not player.sprint_on
+		end
+	else
+		if (btn(🅾️)) then
+			player.sprint_on=true
+		else
+			player.sprint_on=false
+		end
+	end
+
+	if (player.sprint_on) and ((player.dx<0 and btn(⬅️))  or (player.dx>0 and btn(➡️))) then
 		current_friction=player[g.character].run_friction*player[g.character].mod_friction
 		player.move='sprint'
 		player.dx = limit_speed(player.dx,player[g.character].max_dx)

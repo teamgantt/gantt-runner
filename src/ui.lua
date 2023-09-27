@@ -11,6 +11,11 @@ function d_ui()
 
 	spr(46, cam.x+36, cam.y+2+y_offset) --stopwatch
 	print(g.cur_t, cam.x+46, cam.y+4+y_offset, 0)
+
+	-- if sprint toggle is on add icon
+	if player.sprint_on then
+		spr(103, cam.x+118, cam.y+119)
+	end
 end
 
 
