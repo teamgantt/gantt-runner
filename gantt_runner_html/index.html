@@ -2,6 +2,16 @@
   <head>
     <title>Super Gantt Runner</title>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+    <link
+      href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.cdnfonts.com/css/press-start-2p"
+      rel="stylesheet"
+    />
+
     <script type="text/javascript">
       // Default shell for PICO-8 0.2.2 (includes @weeble's gamepad mod 1.0)
       // This file is available under a CC0 license https://creativecommons.org/share-your-work/public-domain/cc0/
@@ -1011,6 +1021,59 @@
     </script>
 
     <style type="text/css">
+      #submit-dialog {
+        font-family: "Press Start 2P", sans-serif;
+        color: white;
+        min-width: 480px;
+        max-width: 500px;
+        border: 2px solid white;
+        background: #000;
+      }
+
+      #submit-dialog h1 {
+        color: #eee;
+        text-align: center;
+      }
+
+      #submit-dialog form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      #submit-dialog label {
+        color: white;
+      }
+
+      #submit-dialog .wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      #submit-dialog .footer {
+        display: flex;
+        gap: 16px;
+      }
+
+      #submit-dialog button[type="submit"] {
+        flex: 1;
+      }
+
+      #leaderboard {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      #leaderboard iframe {
+        border: 0;
+        min-width: 480px;
+        min-height: 400px;
+      }
+    </style>
+
+    <style type="text/css">
       <!--
       .p8_menu_button{
       	opacity:0.3;
@@ -1285,5 +1348,131 @@
       <!-- Add content below the cart here -->
     </div>
     <!-- body_0 -->
+
+    <dialog id="submit-dialog">
+      <div id="leaderboard" style="display: none">
+        <iframe
+          id="iframe"
+          src="https://knownasilya-sgrleaderboard.web.val.run/"
+        ></iframe>
+
+        <button id="close" type="button" class="nes-btn is-dark">Close</button>
+      </div>
+
+      <div id="details" class="wrapper">
+        <h2>High score!</h2>
+
+        <p>Congrats, you got a high score, want to submit it?</p>
+
+        <div class="nes-container is-dark with-title">
+          <p class="title">Project <span id="level"></span></p>
+          <p>Score: <span id="score"></span></p>
+          <p>Time: <span id="time"></span>s</p>
+        </div>
+
+        <form id="score-form">
+          <div class="nes-field">
+            <label for="name">Name</label>
+            <input
+              class="nes-input is-dark"
+              type="text"
+              id="name"
+              name="name"
+              required
+            />
+          </div>
+
+          <input type="hidden" id="id" name="id" />
+
+          <div class="footer">
+            <button id="cancel" type="button" class="nes-btn is-dark">
+              Cancel
+            </button>
+
+            <button class="nes-btn is-primary is-dark" type="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+    <script type="text/javascript">
+      // TODO: trigger this somehow once you get score data from pico8
+      const dummyData = {
+        level: 1,
+        score: 9533,
+        time: 10.3,
+      };
+
+      return;
+
+      const data = new FormData();
+      data.append("id", dummyData.id);
+      data.append("level", dummyData.level);
+      data.append("score", dummyData.score);
+      data.append("time", dummyData.time);
+
+      fetch(`https://knownasilya-sgrSubmit.web.val.run`, {
+        method: "post",
+        body: data,
+      })
+        .then(async (res) => {
+          const result = await res.json();
+
+          if (!result?.isHighScore) return;
+
+          const scoreForm = document.getElementById("score-form");
+          const dialog = document.getElementById("submit-dialog");
+          const cancel = document.getElementById("cancel");
+          const closeDialog = document.getElementById("close");
+          const leaderboard = document.getElementById("leaderboard");
+          const details = document.getElementById("details");
+          const iframe = document.getElementById("iframe");
+
+          const id = document.getElementById("id");
+          id.value = result.id;
+
+          const level = document.getElementById("level");
+          level.textContent = dummyData.level;
+
+          const score = document.getElementById("score");
+          score.textContent = dummyData.score;
+
+          const time = document.getElementById("time");
+          time.textContent = dummyData.time;
+
+          if (dialog) {
+            dialog.showModal();
+            cancel.addEventListener("click", () => {
+              dialog.close();
+            });
+            closeDialog.addEventListener("click", () => {
+              dialog.close();
+            });
+            scoreForm.addEventListener("submit", (e) => {
+              e.preventDefault();
+              fetch(`https://knownasilya-saveSgrScorePost.web.val.run`, {
+                method: "post",
+                body: new FormData(scoreForm),
+              })
+                .then((res) => {
+                  console.log(res);
+
+                  details.style.display = "none";
+                  leaderboard.style.display = "block";
+                  // reload it
+                  iframe.src = iframe.src;
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    </script>
   </body>
 </html>
