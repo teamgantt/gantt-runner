@@ -1024,8 +1024,8 @@
       #submit-dialog {
         font-family: "Press Start 2P", sans-serif;
         color: white;
-        min-width: 480px;
-        max-width: 500px;
+        min-width: 525px;
+        max-width: 550px;
         border: 2px solid white;
         background: #000;
       }
@@ -1366,6 +1366,7 @@
 
         <div class="nes-container is-dark with-title">
           <p class="title">Project <span id="level"></span></p>
+          <p>Character: <span id="character"></span></p>
           <p>Score: <span id="score"></span></p>
           <p>Time: <span id="time"></span>s</p>
         </div>
@@ -1404,13 +1405,15 @@
         level: 1,
         score: 9533,
         time: 10.3,
+        character: "john",
       };
 
-      return;
+      /* return; */
 
       const data = new FormData();
       data.append("id", dummyData.id);
       data.append("level", dummyData.level);
+      data.append("character", dummyData.character);
       data.append("score", dummyData.score);
       data.append("time", dummyData.time);
 
@@ -1442,6 +1445,9 @@
 
           const time = document.getElementById("time");
           time.textContent = dummyData.time;
+
+          const character = document.getElementById("character");
+          character.textContent = dummyData.character;
 
           if (dialog) {
             dialog.showModal();
