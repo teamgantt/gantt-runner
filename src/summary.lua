@@ -147,6 +147,28 @@ function d_summary()
     print('❎ to retry level', cam.x+28, cam.y+102, 7)
     print('🅾️ to quit', cam.x+42, cam.y+110, 6)
   end
+
+  --sync score to gpio
+  sync_score(g.character, g.level, player.score, g.end_t)
+end
+
+function sync_score(character, level, score, time)
+  local gpio_base = 0x5f80
+  local score = character..','..level..','..score..','..time
+
+  local length = 0
+  
+  -- write packet data to GPIO memory
+  for i = 1, #score do
+    poke(gpio_base + i, ord(sub(score, i, i)) & 0xff)
+    length = length + 1
+  end
+
+  -- increment once more to account for packet length byte
+  length = length + 1
+
+  -- write total packet length to GPIO[0]
+  poke(gpio_base, length)
 end
 
 
