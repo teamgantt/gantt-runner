@@ -1024,8 +1024,7 @@
       #submit-dialog {
         font-family: "Press Start 2P", sans-serif;
         color: white;
-        min-width: 525px;
-        max-width: 550px;
+        width: 80%;
         border: 2px solid white;
         background: #000;
       }
@@ -1068,7 +1067,7 @@
 
       #leaderboard iframe {
         border: 0;
-        min-width: 480px;
+        width: 100%;
         min-height: 400px;
       }
     </style>
@@ -1464,7 +1463,7 @@
                     details.style.display = "none";
                     leaderboard.style.display = "block";
                     // reload it
-                    iframe.src = iframe.src + '?level=' + stats.level;
+                    iframe.src = iframe.src + "?level=" + stats.level;
                   })
                   .catch((err) => {
                     console.error(err);
