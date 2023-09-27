@@ -21,8 +21,12 @@ __lua__
 
 function _init()
 	debug=false
-	sprint_hold=false
 	local fetched_data = cartdata('sgr_level_stats')
+	sprint_hold = true
+
+	if (fetched_data and dget(63) == 0) then
+		sprint_hold = false
+	end
 	printh("fetched_data: "..tostr(fetched_data), 'log')
 
 	class = { init = function()end; extend = function(self, proto) local meta = {}
@@ -68,8 +72,12 @@ function _update60()
 
 
 	menuitem(4, sprint_menu_label,
-		function(b)
+		function()
 			sprint_hold = not sprint_hold
+
+			local sprint_tog = 0
+			if (sprint_hold) sprint_tog = 1
+			dset(63, sprint_tog)
 		end
 	)
 end
