@@ -1474,8 +1474,12 @@
 
                     details.style.display = "none";
                     leaderboard.style.display = "block";
+
                     // reload it
-                    iframe.src = iframe.src + "?level=" + stats.level;
+                    const existingUrl = new URL(iframe.src);
+                    existingUrl.searchParams.set("level", stats.level);
+
+                    iframe.src = existingUrl.toString();
                   })
                   .catch((err) => {
                     console.error(err);
