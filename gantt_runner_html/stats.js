@@ -23,5 +23,5 @@ gpio.subscribe(function () {
 
   console.log("Stats: " + JSON.stringify(stats, null, 2));
 
-  // submitStats(stats);
+  submitStats(stats);
 });

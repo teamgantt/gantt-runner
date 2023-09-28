@@ -1399,6 +1399,60 @@
     </dialog>
 
     <script type="text/javascript">
+      const dialog = document.getElementById("submit-dialog");
+      const cancel = document.getElementById("cancel");
+      const closeDialog = document.getElementById("close");
+      const leaderboard = document.getElementById("leaderboard");
+      const details = document.getElementById("details");
+      const scoreForm = document.getElementById("score-form");
+
+      // prevents bug on mobile
+      dialog.addEventListener("touchstart", (e) => {
+        e.stopPropagation();
+      });
+
+      cancel.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        dialog.close();
+        details.style.display = "block";
+        leaderboard.style.display = "none";
+      });
+
+      closeDialog.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        dialog.close();
+        details.style.display = "block";
+        leaderboard.style.display = "none";
+      });
+
+      scoreForm.addEventListener("submit", (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        fetch(`https://knownasilya-saveSgrScorePost.web.val.run`, {
+          method: "post",
+          body: new FormData(scoreForm),
+        })
+          .then((res) => {
+            console.log(res);
+
+            details.style.display = "none";
+            leaderboard.style.display = "block";
+
+            // reload it
+            const existingUrl = new URL(iframe.src);
+            const level = document.getElementById("level").textContent.trim();
+            existingUrl.searchParams.set("level", level);
+
+            iframe.src = existingUrl.toString();
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
+
       function submitStats(stats) {
         const data = new FormData();
         data.append("id", stats.id);
@@ -1416,12 +1470,6 @@
 
             if (!result?.isHighScore) return;
 
-            const scoreForm = document.getElementById("score-form");
-            const dialog = document.getElementById("submit-dialog");
-            const cancel = document.getElementById("cancel");
-            const closeDialog = document.getElementById("close");
-            const leaderboard = document.getElementById("leaderboard");
-            const details = document.getElementById("details");
             const iframe = document.getElementById("iframe");
 
             const id = document.getElementById("id");
@@ -1441,50 +1489,6 @@
 
             if (dialog) {
               dialog.showModal();
-
-              // prevents bug on mobile
-              dialog.addEventListener("touchstart", (e) => {
-                e.stopPropagation();
-              });
-
-              cancel.addEventListener("click", (e) => {
-                e.stopPropagation();
-
-                dialog.close();
-                details.style.display = "block";
-                leaderboard.style.display = "none";
-              });
-              closeDialog.addEventListener("click", (e) => {
-                e.stopPropagation();
-
-                dialog.close();
-                details.style.display = "block";
-                leaderboard.style.display = "none";
-              });
-              scoreForm.addEventListener("submit", (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-
-                fetch(`https://knownasilya-saveSgrScorePost.web.val.run`, {
-                  method: "post",
-                  body: new FormData(scoreForm),
-                })
-                  .then((res) => {
-                    console.log(res);
-
-                    details.style.display = "none";
-                    leaderboard.style.display = "block";
-
-                    // reload it
-                    const existingUrl = new URL(iframe.src);
-                    existingUrl.searchParams.set("level", stats.level);
-
-                    iframe.src = existingUrl.toString();
-                  })
-                  .catch((err) => {
-                    console.error(err);
-                  });
-              });
             }
           })
           .catch((err) => {
