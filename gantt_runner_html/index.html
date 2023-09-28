@@ -1024,7 +1024,7 @@
       #submit-dialog {
         font-family: "Press Start 2P", sans-serif;
         color: white;
-        width: 80%;
+        width: 90%;
         border: 2px solid white;
         background: #000;
       }
@@ -1441,18 +1441,30 @@
 
             if (dialog) {
               dialog.showModal();
-              cancel.addEventListener("click", () => {
+
+              // prevents bug on mobile
+              dialog.addEventListener("touchstart", (e) => {
+                e.stopPropagation();
+              });
+
+              cancel.addEventListener("click", (e) => {
+                e.stopPropagation();
+
                 dialog.close();
                 details.style.display = "block";
                 leaderboard.style.display = "none";
               });
-              closeDialog.addEventListener("click", () => {
+              closeDialog.addEventListener("click", (e) => {
+                e.stopPropagation();
+
                 dialog.close();
                 details.style.display = "block";
                 leaderboard.style.display = "none";
               });
               scoreForm.addEventListener("submit", (e) => {
+                e.stopPropagation();
                 e.preventDefault();
+
                 fetch(`https://knownasilya-saveSgrScorePost.web.val.run`, {
                   method: "post",
                   body: new FormData(scoreForm),
