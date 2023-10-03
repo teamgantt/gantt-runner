@@ -109,6 +109,9 @@ function d_summary()
     end
 
     print(win_msg[msg_idx], cam.x+hcenter(win_msg[msg_idx]), cam.y+90, 12)
+
+    --sync score to gpio
+    sync_score(g.character, g.level, player.score, g.end_t)
   elseif (g.status=='lose') then
     local msg_w = print(fail_msg[msg_idx], 0, cam.y-128, 9)
     rectfill(cam.x, cam.y, cam.x+127, cam.y+127, 2)
@@ -147,9 +150,6 @@ function d_summary()
     print('❎ to retry level', cam.x+28, cam.y+102, 7)
     print('🅾️ to quit', cam.x+42, cam.y+110, 6)
   end
-
-  --sync score to gpio
-  sync_score(g.character, g.level, player.score, g.end_t)
 end
 
 function sync_score(character, level, score, time)

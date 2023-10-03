@@ -35,7 +35,7 @@
     leaderboard.style.display = "none";
   });
 
-  window.addEventListener("levelcomplete", (e) => {
+  window.addEventListener("levelwon", (e) => {
     submitStats(e.detail);
   });
 

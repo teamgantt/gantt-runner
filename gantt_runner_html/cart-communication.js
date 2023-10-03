@@ -23,7 +23,7 @@
     };
 
     window.dispatchEvent(
-      new CustomEvent("levelcomplete", {
+      new CustomEvent("levelwon", {
         detail: stats,
       })
     );
