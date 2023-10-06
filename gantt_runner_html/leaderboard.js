@@ -1,3 +1,5 @@
+import * as leaderboardService from "./leaderboard-service.js";
+
 (function () {
   const dialog = document.getElementById("submit-dialog");
   const cancel = document.getElementById("cancel");
@@ -7,7 +9,6 @@
   const scoreForm = document.getElementById("score-form");
   const iframe = document.getElementById("iframe");
   const statsUi = {
-    id: document.getElementById("id"),
     level: document.getElementById("level"),
     score: document.getElementById("score"),
     time: document.getElementById("time"),
@@ -35,65 +36,59 @@
     leaderboard.style.display = "none";
   });
 
-  window.addEventListener("levelwon", (e) => {
-    submitStats(e.detail);
+  window.addEventListener("levelwon", async (e) => {
+    const stats = e.detail;
+    const isHighScore = await leaderboardService.isHighScore(
+      stats.level,
+      stats.score
+    );
+
+    if (isHighScore) {
+      statsUi.level.textContent = stats.level;
+      statsUi.score.textContent = stats.score;
+      statsUi.time.textContent = stats.time;
+      statsUi.character.textContent = stats.character;
+
+      scoreForm.level.value = stats.level;
+      scoreForm.score.value = stats.score;
+      scoreForm.time.value = stats.time;
+      scoreForm.character.value = stats.character;
+
+      if (dialog) {
+        dialog.showModal();
+      }
+    }
   });
 
-  scoreForm.addEventListener("submit", (e) => {
+  scoreForm.addEventListener("submit", async (e) => {
     e.stopPropagation();
     e.preventDefault();
 
-    fetch(`https://knownasilya-saveSgrScorePost.web.val.run`, {
-      method: "post",
-      body: new FormData(scoreForm),
-    })
-      .then((res) => {
-        console.log(res);
+    const level = scoreForm.level.value;
+    const name = scoreForm.name.value;
+    const score = scoreForm.score.value;
+    const character = scoreForm.character.value;
+    const time = scoreForm.time.value;
 
-        details.style.display = "none";
-        leaderboard.style.display = "block";
+    await leaderboardService.submitScore(level, {
+      name,
+      score,
+      character,
+      time,
+    });
 
-        // reload it
-        const existingUrl = new URL(iframe.src);
-        const level = document.getElementById("level").textContent.trim();
-        existingUrl.searchParams.set("level", level);
+    const topScores = await leaderboardService.getScores(level);
 
-        iframe.src = existingUrl.toString();
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    // TODO: rebuild scoreboard UI
+
+    // details.style.display = "none";
+    // leaderboard.style.display = "block";
+
+    // // reload it
+    // const existingUrl = new URL(iframe.src);
+    // const level = document.getElementById("level").textContent.trim();
+    // existingUrl.searchParams.set("level", level);
+
+    // iframe.src = existingUrl.toString();
   });
-
-  function submitStats(stats) {
-    const data = new FormData();
-    data.append("id", stats.id);
-    data.append("level", stats.level);
-    data.append("character", stats.character);
-    data.append("score", stats.score);
-    data.append("time", stats.time);
-
-    fetch(`https://knownasilya-sgrSubmit.web.val.run`, {
-      method: "post",
-      body: data,
-    })
-      .then(async (res) => {
-        const result = await res.json();
-
-        if (!result?.isHighScore) return;
-
-        statsUi.id.value = result.id;
-        statsUi.level.textContent = stats.level;
-        statsUi.score.textContent = stats.score;
-        statsUi.time.textContent = stats.time;
-        statsUi.character.textContent = stats.character;
-
-        if (dialog) {
-          dialog.showModal();
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
 })();

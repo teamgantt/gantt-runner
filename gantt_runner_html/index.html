@@ -1393,7 +1393,10 @@
             />
           </div>
 
-          <input type="hidden" id="id" name="id" />
+          <input type="hidden" name="level" />
+          <input type="hidden" name="score" />
+          <input type="hidden" name="character" />
+          <input type="hidden" name="time" />
 
           <div class="footer">
             <button id="cancel" type="button" class="nes-btn is-dark">
@@ -1410,8 +1413,9 @@
     <section id="leaderboard-links">
       Leaderboards: <a href="https://knownasilya-sgrleaderboard.web.val.run/?level=1">Project 1</a> | <a href="https://knownasilya-sgrleaderboard.web.val.run/?level=2">Project 2</a> | <a href="https://knownasilya-sgrleaderboard.web.val.run/?level=3">Project 3</a>
     </section>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/pico8-gpio-listener"></script>
     <script src="cart-communication.js"></script>
-    <script src="leaderboard.js"></script>
+    <script type="module" src="leaderboard.js"></script>
   </body>
 </html>
