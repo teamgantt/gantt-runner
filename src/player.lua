@@ -204,6 +204,12 @@ function u_player()
 		player.dx = limit_speed(player.dx,player[g.character].max_dx-0.5) -- lower max speed if not sprinting
 	end
 
+	--collision with banana
+	if (collide_map(player,"right",4) or collide_map(player,"left",4)) then
+		player.dx*=9
+		sfx(9)
+	end
+
 	--limit fall speed
 	if (player.dy>0) then
 		player.dy=limit_speed(player.dy,player.max_dy)
@@ -278,7 +284,7 @@ function u_player()
 	player.feet_x=player.x+player.w/2
 
 	-- player falls, reset
-	if (player.y > cam.y+128) then
+	if (player.y > cam_y+128) then
 		g.end_level('lose')
 	end
 
@@ -297,10 +303,10 @@ function d_player()
 		print("x:"..flr(player.x), player.x, player.y-30, 1)
 		print("y:"..flr(player.y), player.x, player.y-36, 1)
 		print("has_double:"..tostr(player.has_double), player.x, player.y-46, 1)
-		print("dy:"..tostr(player.dy),cam.x, cam.y+10,11)
-		print("dx:"..tostr(player.dx),cam.x, cam.y+16,11)
-		print("falling: "..tostr(player.falling),cam.x, cam.y+22,11)
-		print("friction: "..tostr(current_friction),cam.x, cam.y+28,11)
+		print("dy:"..tostr(player.dy),cam_x, cam_y+10,11)
+		print("dx:"..tostr(player.dx),cam_x, cam_y+16,11)
+		print("falling: "..tostr(player.falling),cam_x, cam_y+22,11)
+		print("friction: "..tostr(current_friction),cam_x, cam_y+28,11)
 	end
 
 	--offset for player sprite/hitbox

@@ -26,6 +26,14 @@ function i_stats()
         best_time=0,
         best_miles=0
       },
+      {
+        pts=0,
+        time=0,
+        miles=0,
+        best_pts=0,
+        best_time=0,
+        best_miles=0
+      }
     },
 
     level_stat_addresses={
@@ -52,6 +60,14 @@ function i_stats()
           best_pts=15,
           best_time=16,
           best_miles=17
+        },
+        {
+          pts=18,
+          time=19,
+          miles=20,
+          best_pts=21,
+          best_time=22,
+          best_miles=23
         }
       },
 
