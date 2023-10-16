@@ -1,5 +1,7 @@
 function i_levels()
-	mile_frames={18,18,18,18,18,18,18,18,18,18,18,18, 19, 20, 21, 22, 22}
+
+
+	mile_frames={18,18,18,18,18,18,18,18,18,18,18,18,19,20,21,22,22}
 	mile_timing=.3
 	mile_delay=20
 	mile_tick=0
@@ -23,8 +25,8 @@ function i_levels()
       self.start_cell_y = start_cell_y
       self.level_w = level_w
       self.level_h = level_h
-      self.player_x = cam.x+player_x
-      self.player_y = cam.y+player_y
+      self.player_x = cam_x+player_x
+      self.player_y = cam_y+player_y
       self.offset_y = offset_y
       self.color_bg = color
 
@@ -60,7 +62,14 @@ function i_levels()
     end;
 
     draw = function(self)
-     map(self.start_cell_x,self.start_cell_y,0,0,self.level_w,self.level_h)
+      map(self.start_cell_x,self.start_cell_y,0,0,self.level_w,self.level_h)
+      if (self.color_bg == 0) then
+        g.line_color = 5
+        g.text_color = 7
+      else
+        g.line_color = 6
+        g.text_color = 0
+      end
 
       -- draw milestones
       for k,mile in ipairs(self.milestones) do

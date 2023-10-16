@@ -32,10 +32,11 @@ function u_menu()
 	end
 
 
-	if (btnp(❎)) then
-		g.scene = 'select'
-    sfx(2)
-	end
+
+  if (btnp(❎) or btnp(🅾️)) then
+		sfx(2)
+    load("game.p8", 'back to menu')
+  end
 
 
   if run_anim.f >= count(player.nathan.run_frames) then
@@ -69,14 +70,14 @@ function d_menu()
 	spr(menu_john.run_frames[flr(run_anim.f)], menu_john.x, menu_john.y, 2, 2, menu_john.flip_x)
 
 
-  print('❎ to start', cam.x+40, 68, 7)
+  print('❎ to start', cam_x+40, 68, 7)
 
 	-- draw task bar
-	rectfill(cam.x-1, cam.y+100, cam.x+129, cam.y+108, 10)
-	rect(cam.x-1, cam.y+100, cam.x+129, cam.y+108, 9)
+	rectfill(cam_x-1, cam_y+100, cam_x+129, cam_y+108, 10)
+	rect(cam_x-1, cam_y+100, cam_x+129, cam_y+108, 9)
 
-	spr(248, cam.x+8, cam.y+114, 1, 1) --tg logo
-	print('copyright 2023 teamgantt', cam.x+19, 116, 6)
+	spr(248, cam_x+8, cam_y+114, 1, 1) --tg logo
+	print('copyright 2023 teamgantt', cam_x+19, 116, 6)
 end
 
 function get_nathan_frames(is_rolling)

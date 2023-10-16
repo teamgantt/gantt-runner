@@ -99,56 +99,56 @@ function d_summary()
   local stat_offy = 8
 
   if (g.status=='win') then
-    rectfill(cam.x, cam.y, cam.x+127, cam.y+127, 1)
+    rectfill(cam_x, cam_y, cam_x+127, cam_y+127, 1)
 
     for i,v in pairs(banners_top) do
-      spr(29, cam.x+v.x, cam.y+v.y, 1, 1)
+      spr(29, cam_x+v.x, cam_y+v.y, 1, 1)
     end
     for i,v in pairs(banners_bottom) do
-      spr(29, cam.x+v.x, cam.y+v.y, 1, 1)
+      spr(29, cam_x+v.x, cam_y+v.y, 1, 1)
     end
 
-    print(win_msg[msg_idx], cam.x+hcenter(win_msg[msg_idx]), cam.y+90, 12)
+    print(win_msg[msg_idx], cam_x+hcenter(win_msg[msg_idx]), cam_y+90, 12)
 
     --sync score to gpio
     sync_score(g.character, g.level, player.score, g.end_t)
   elseif (g.status=='lose') then
-    local msg_w = print(fail_msg[msg_idx], 0, cam.y-128, 9)
-    rectfill(cam.x, cam.y, cam.x+127, cam.y+127, 2)
-    print(fail_msg[msg_idx], cam.x+hcenter(fail_msg[msg_idx]), cam.y+90, 8)
-    spr(119, cam.x+hcenter(fail_msg[msg_idx])-12, cam.y+88, 1, 1)
-    spr(119, cam.x+hcenter(fail_msg[msg_idx])+msg_w+2, cam.y+88, 1, 1)
+    local msg_w = print(fail_msg[msg_idx], 0, cam_y-128, 9)
+    rectfill(cam_x, cam_y, cam_x+127, cam_y+127, 2)
+    print(fail_msg[msg_idx], cam_x+hcenter(fail_msg[msg_idx]), cam_y+90, 8)
+    spr(119, cam_x+hcenter(fail_msg[msg_idx])-12, cam_y+88, 1, 1)
+    spr(119, cam_x+hcenter(fail_msg[msg_idx])+msg_w+2, cam_y+88, 1, 1)
   end
   fillp(0)
-  rect(cam.x+22, cam.y+12, cam.x+104, cam.y+83, 7)
-  line(cam.x+22, cam.y+32, cam.x+104, cam.y+32, 7)
-  line(cam.x+22, cam.y+40, cam.x+104, cam.y+40, 7)
+  rect(cam_x+22, cam_y+12, cam_x+104, cam_y+83, 7)
+  line(cam_x+22, cam_y+32, cam_x+104, cam_y+32, 7)
+  line(cam_x+22, cam_y+40, cam_x+104, cam_y+40, 7)
 
-	spr(248, cam.x+29, 19, 2, 2) --tg logo
-	print('run summary', cam.x+44, cam.y+21, 7)
+	spr(106, cam_x+29, 19, 1, 1) --tg logo
+	print('run summary', cam_x+44, cam_y+21, 7)
 
-  print('project '..g.level, cam.x+42+stat_offx, cam.y+26+stat_offy, 7)
+  print('project '..g.level, cam_x+42+stat_offx, cam_y+26+stat_offy, 7)
 
-  spr(46, cam.x+44+stat_offx, cam.y+35+stat_offy) --time
-	print(g.end_t..' sec', cam.x+56+stat_offx, cam.y+37+stat_offy, 7)
+  spr(46, cam_x+44+stat_offx, cam_y+35+stat_offy) --time
+	print(g.end_t..' sec', cam_x+56+stat_offx, cam_y+37+stat_offy, 7)
 
-	spr(18, cam.x+44+stat_offx, cam.y+45+stat_offy) --milestones
-  print(player.milestones..'/'..g.total_milestones, cam.x+56+stat_offx, cam.y+47+stat_offy, 7)
+	spr(18, cam_x+44+stat_offx, cam_y+45+stat_offy) --milestones
+  print(player.milestones..'/'..g.total_milestones, cam_x+56+stat_offx, cam_y+47+stat_offy, 7)
 
-  spr(102, cam.x+44+stat_offx, cam.y+55+stat_offy) --jumps
-  print(player.jumps..' jumps', cam.x+56+stat_offx, cam.y+57+stat_offy, 7)
+  spr(102, cam_x+44+stat_offx, cam_y+55+stat_offy) --jumps
+  print(player.jumps..' jumps', cam_x+56+stat_offx, cam_y+57+stat_offy, 7)
 
-  spr(16, cam.x+44+stat_offx, cam.y+65+stat_offy) --score
-  print(player.score..' pts', cam.x+56+stat_offx, cam.y+67+stat_offy, 7)
+  spr(16, cam_x+44+stat_offx, cam_y+65+stat_offy) --score
+  print(player.score..' pts', cam_x+56+stat_offx, cam_y+67+stat_offy, 7)
 
   -- player backing rect
-  rectfill(cam.x+42, cam.y+42, cam.x+24, cam.y+81, 7)
-  spr(player[g.character].run_frames[flr(run_anim.f)], cam.x+26, cam.y+64, 2, 2)
+  rectfill(cam_x+42, cam_y+42, cam_x+24, cam_y+81, 7)
+  spr(player[g.character].run_frames[flr(run_anim.f)], cam_x+26, cam_y+64, 2, 2)
 
   --delay instructions
   if (delay_instructions == 0) then
-    print('❎ to retry level', cam.x+28, cam.y+102, 7)
-    print('🅾️ to quit', cam.x+42, cam.y+110, 6)
+    print('❎ to retry level', cam_x+28, cam_y+102, 7)
+    print('🅾️ to quit', cam_x+42, cam_y+110, 6)
   end
 end
 
@@ -157,7 +157,7 @@ function sync_score(character, level, score, time)
   local score = character..','..level..','..score..','..time
 
   local length = 0
-  
+
   -- write packet data to GPIO memory
   for i = 1, #score do
     poke(gpio_base + i, ord(sub(score, i, i)) & 0xff)
