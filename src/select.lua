@@ -14,6 +14,8 @@ function i_select()
     w=19,
     h=19
   }
+
+  secret_offset_x = 0
 end
 
 
@@ -132,15 +134,28 @@ function d_select()
     local stats_offset_x = 32
     local stats_offset_y = 64
     local project_name = selected_index
-    rect(select_box_lvl.x, select_box_lvl.y, select_box_lvl.x+select_box_lvl.w, select_box_lvl.y+select_box_lvl.h, 7)
+
     if (project_name == 4) project_name = "dark mode"
     local title = 'project '..project_name
     print(title, cam_x+hcenter(title), 2, 7)
 
+    -- slide over the level images
+    if (selected_index == 4) then
+      if (secret_offset_x > -14) then
+        secret_offset_x -= 1
+      end
+    elseif (selected_index == 3) then
+      if (secret_offset_x < 0) then
+        secret_offset_x += 1
+      end
+    end
+
     local lvl_spr = {
-      x=32,
+      x=32+secret_offset_x,
       y=22,
     }
+
+    rect(select_box_lvl.x+secret_offset_x, select_box_lvl.y, select_box_lvl.x+select_box_lvl.w+secret_offset_x, select_box_lvl.y+select_box_lvl.h, 7)
     spr(76, lvl_spr.x, lvl_spr.y, 2, 2)
     spr(78, lvl_spr.x+24, lvl_spr.y, 2, 2)
     spr(108,lvl_spr.x+48, lvl_spr.y, 2, 2)
